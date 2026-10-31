@@ -18,6 +18,7 @@ import 'package:PiliPlus/models/common/sponsor_block/segment_type.dart';
 import 'package:PiliPlus/models/common/sponsor_block/skip_type.dart';
 import 'package:PiliPlus/models/common/super_chat_type.dart';
 import 'package:PiliPlus/models/common/super_resolution_type.dart';
+import 'package:PiliPlus/models/common/video/video_alignment_type.dart';
 import 'package:PiliPlus/models/common/theme/theme_type.dart';
 import 'package:PiliPlus/models/common/video/base_quality.dart';
 import 'package:PiliPlus/models/common/video/cdn_type.dart';
@@ -479,6 +480,15 @@ abstract final class Pref {
       superResolutionType = SuperResolutionType.values.elementAtOrNull(index);
     }
     return superResolutionType ?? SuperResolutionType.disable;
+  }
+
+  static VideoAlignmentType get videoAlignment {
+    VideoAlignmentType? videoAlignment;
+    final index = _setting.get(SettingBoxKey.videoAlignment);
+    if (index != null) {
+      videoAlignment = VideoAlignmentType.values.elementAtOrNull(index);
+    }
+    return videoAlignment ?? VideoAlignmentType.center;
   }
 
   static bool get preInitPlayer =>

@@ -99,6 +99,7 @@ abstract final class SettingBoxKey {
       audioNormalization = 'audioNormalization',
       fallbackNormalization = 'fallbackNormalization',
       superResolutionType = 'superResolutionType',
+      videoAlignment = 'videoAlignment',
       preInitPlayer = 'preInitPlayer',
       mainTabBarView = 'mainTabBarView',
       searchSuggestion = 'searchSuggestion',

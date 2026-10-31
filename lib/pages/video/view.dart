@@ -505,17 +505,17 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
                     final Brightness statusBarIconBrightness;
                     final backgroundColor = isPortrait && scrollRatio > 0
                         ? Color.lerp(
-                            Colors.black,
+                            Colors.white,
                             colorScheme.surface,
                             scrollRatio,
                           )!
-                        : Colors.black;
+                        : Colors.white;
                     if (isPortrait && scrollRatio >= 0.5) {
                       statusBarBrightness = brightness;
                       statusBarIconBrightness = brightness.reverse;
                     } else {
-                      statusBarBrightness = .dark;
-                      statusBarIconBrightness = .light;
+                      statusBarBrightness = .light;
+                      statusBarIconBrightness = .dark;
                     }
                     return SimpleAppBar(
                       height: padding.top,

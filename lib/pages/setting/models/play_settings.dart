@@ -5,6 +5,7 @@ import 'package:PiliPlus/common/widgets/image_grid/image_grid_view.dart';
 import 'package:PiliPlus/models/common/audio_normalization.dart';
 import 'package:PiliPlus/models/common/super_chat_type.dart';
 import 'package:PiliPlus/models/common/super_resolution_type.dart';
+import 'package:PiliPlus/models/common/video/video_alignment_type.dart';
 import 'package:PiliPlus/models/common/video/subtitle_pref_type.dart';
 import 'package:PiliPlus/pages/setting/models/model.dart';
 import 'package:PiliPlus/pages/setting/pages/fullscreen_sc.dart';
@@ -62,11 +63,17 @@ List<SettingsModel> get playSettings => [
       onTap: audioNormalization,
     ),
   NormalModel(
-    title: '超分辨率',
+    title: '墨水屏网点滤镜',
     leading: const Icon(Icons.stay_current_landscape_outlined),
     getSubtitle: () =>
-        '当前:「${Pref.superResolutionType.label}」\n默认设置对番剧生效, 其他视频默认关闭\n超分辨率需要启用硬件解码, 若启用硬件解码后仍然不生效, 尝试切换硬件解码器为 auto-copy',
+        '当前: ${Pref.superResolutionType.label}\n基于 4x4 抖动聚簇 GLSL 着色器，专为黑白墨水屏优化，消残影展色阶',
     onTap: _showSuperResolutionDialog,
+  ),
+  NormalModel(
+    title: '默认画面对齐',
+    leading: const Icon(Icons.format_align_center),
+    getSubtitle: () => '当前: ${Pref.videoAlignment.label}',
+    onTap: _showVideoAlignmentDialog,
   ),
   const SwitchModel(
     title: '自动播放',
@@ -547,7 +554,7 @@ Future<void> _showSuperResolutionDialog(
   final res = await showDialog<SuperResolutionType>(
     context: context,
     builder: (context) => SelectDialog<SuperResolutionType>(
-      title: '超分辨率',
+      title: '墨水屏网点滤镜',
       value: Pref.superResolutionType,
       values: SuperResolutionType.values.map((e) => (e, e.label)).toList(),
     ),
@@ -555,6 +562,27 @@ Future<void> _showSuperResolutionDialog(
   if (res != null) {
     await GStorage.setting.put(
       SettingBoxKey.superResolutionType,
+      res.index,
+    );
+    setState();
+  }
+}
+
+Future<void> _showVideoAlignmentDialog(
+  BuildContext context,
+  VoidCallback setState,
+) async {
+  final res = await showDialog<VideoAlignmentType>(
+    context: context,
+    builder: (context) => SelectDialog<VideoAlignmentType>(
+      title: '画面对齐',
+      value: Pref.videoAlignment,
+      values: VideoAlignmentType.values.map((e) => (e, e.label)).toList(),
+    ),
+  );
+  if (res != null) {
+    await GStorage.setting.put(
+      SettingBoxKey.videoAlignment,
       res.index,
     );
     setState();
