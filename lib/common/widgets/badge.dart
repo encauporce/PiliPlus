@@ -45,6 +45,7 @@ class PBadge extends StatelessWidget {
     final colorScheme = ColorScheme.of(context);
 
     final Color bgColor;
+    final Color color;
     final isDark = colorScheme.isDark;
     Color borderColor = isDark ? Colors.white : Colors.black;
 
