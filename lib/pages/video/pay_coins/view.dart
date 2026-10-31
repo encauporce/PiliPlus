@@ -47,13 +47,8 @@ class PayCoinsPage extends StatefulWidget {
             hasCopyright: hasCopyright,
           );
         },
-        transitionDuration: const Duration(milliseconds: 225),
-        transitionBuilder: (context, animation, secondaryAnimation, child) {
-          return FadeTransition(
-            opacity: animation,
-            child: child,
-          );
-        },
+        transitionDuration: Duration.zero,
+        transitionBuilder: (context, animation, secondaryAnimation, child) => child,
       ),
     );
   }

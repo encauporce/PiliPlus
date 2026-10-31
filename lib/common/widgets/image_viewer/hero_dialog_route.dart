@@ -23,7 +23,7 @@ class HeroDialogRoute<T> extends PageRoute<T> {
   String? get barrierLabel => null;
 
   @override
-  Duration get transitionDuration => const Duration(milliseconds: 300);
+  Duration get transitionDuration => Duration.zero;
 
   @override
   bool get maintainState => true;
@@ -38,10 +38,7 @@ class HeroDialogRoute<T> extends PageRoute<T> {
     Animation<double> secondaryAnimation,
     Widget child,
   ) {
-    return FadeTransition(
-      opacity: animation.drive(CurveTween(curve: Curves.easeOut)),
-      child: child,
-    );
+    return child;
   }
 
   @override

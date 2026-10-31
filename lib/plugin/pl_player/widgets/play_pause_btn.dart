@@ -29,7 +29,7 @@ class PlayOrPauseButtonState extends State<PlayOrPauseButton>
     controller = AnimationController(
       vsync: this,
       value: player.state.playing ? 1 : 0,
-      duration: const Duration(milliseconds: 200),
+      duration: Duration.zero,
     );
     subscription = player.stream.playing.listen((playing) {
       if (playing) {

@@ -125,10 +125,10 @@ class _HomePageState extends CommonPageState<HomePage>
           final showSearchBar = showTopBar.value;
           return AnimatedOpacity(
             opacity: showSearchBar ? 1 : 0,
-            duration: const Duration(milliseconds: 300),
+            duration: Duration.zero,
             child: AnimatedContainer(
               curve: Curves.easeInOutCubicEmphasized,
-              duration: const Duration(milliseconds: 500),
+              duration: Duration.zero,
               height: showSearchBar ? Style.topBarHeight : 0,
               padding: padding,
               child: child,
@@ -146,17 +146,22 @@ class _HomePageState extends CommonPageState<HomePage>
 
   Widget searchBar() {
     const borderRadius = BorderRadius.all(Radius.circular(25));
+    final isDark = _colorScheme.brightness == Brightness.dark;
     return Expanded(
       child: SizedBox(
         height: 44,
         child: Material(
           borderRadius: borderRadius,
-          color: _colorScheme.onSecondaryContainer.withValues(alpha: 0.05),
+          shape: RoundedRectangleBorder(
+            borderRadius: borderRadius,
+            side: BorderSide(
+              color: isDark ? Colors.white : Colors.black,
+              width: 1.0,
+            ),
+          ),
+          color: _colorScheme.surfaceContainerHighest,
           child: InkWell(
             borderRadius: borderRadius,
-            splashColor: _colorScheme.primaryContainer.withValues(
-              alpha: 0.3,
-            ),
             onTap: () => Get.toNamed(
               '/search',
               parameters: _homeController.enableSearchWord
@@ -178,7 +183,7 @@ class _HomePageState extends CommonPageState<HomePage>
                       _homeController.defaultSearch.value,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(color: _colorScheme.outline),
+                      style: TextStyle(color: _colorScheme.onSurface),
                     ),
                   ),
                 ),
@@ -215,9 +220,6 @@ Widget userAvatar({
                   type: .transparency,
                   child: InkWell(
                     onTap: mainController.toMinePage,
-                    splashColor: colorScheme.primaryContainer.withValues(
-                      alpha: 0.3,
-                    ),
                     customBorder: const CircleBorder(),
                   ),
                 ),
@@ -233,6 +235,12 @@ Widget userAvatar({
                             decoration: BoxDecoration(
                               shape: .circle,
                               color: colorScheme.secondaryContainer,
+                              border: Border.all(
+                                color: colorScheme.brightness == Brightness.dark
+                                    ? Colors.white
+                                    : Colors.black,
+                                width: 1.0,
+                              ),
                             ),
                             child: Icon(
                               size: 14,
@@ -255,6 +263,12 @@ Widget userAvatar({
             style: IconButton.styleFrom(
               padding: .zero,
               backgroundColor: colorScheme.onInverseSurface,
+              side: BorderSide(
+                color: colorScheme.brightness == Brightness.dark
+                    ? Colors.white
+                    : Colors.black,
+                width: 1.0,
+              ),
             ),
             onPressed: mainController.toMinePage,
             icon: Icon(

@@ -47,7 +47,7 @@ class NetworkImgLayer extends StatelessWidget {
     if (src?.isNotEmpty == true) {
       Widget child = _buildImage(context, isEmote: isEmote, isAvatar: isAvatar);
       final isDark = Theme.of(context).brightness == Brightness.dark;
-      final borderColor = isDark ? Colors.white38 : Colors.black26;
+      final borderColor = isDark ? const Color(0xFF666666) : const Color(0xFFCCCCCC);
       if (isEmote) {
         return child;
       } else if (isAvatar) {

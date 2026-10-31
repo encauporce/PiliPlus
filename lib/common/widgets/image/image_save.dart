@@ -37,7 +37,7 @@ void imageSaveDialog({
 }) {
   Get.key.currentState!.push(
     PublishRoute(
-      transitionDuration: const Duration(milliseconds: 200),
+      transitionDuration: Duration.zero,
       pageBuilder: (context, animation, secondaryAnimation) {
         final colorScheme = ColorScheme.of(context);
         final double width, height;
