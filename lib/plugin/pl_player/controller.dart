@@ -1,6 +1,7 @@
 import 'dart:async' show StreamSubscription, Timer;
 import 'dart:convert' show ascii, utf8;
 import 'dart:io' show File, Platform;
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:PiliPlus/models/common/video/video_alignment_type.dart';
 import 'dart:math' show max, min;
 import 'dart:ui' as ui;
@@ -826,18 +827,47 @@ class PlPlayerController with BlockConfigMixin, AudioNormalizationMixin {
     switch (type) {
       case SuperResolutionType.disable:
         return pp.command(const ['change-list', 'glsl-shaders', 'clr', '']);
-      case SuperResolutionType.efficiency:
-      case SuperResolutionType.quality:
-        final customFile = File('/sdcard/mpv/shaders/halftone.glsl');
-        final shaderPath = (Platform.isAndroid && await customFile.exists())
-            ? customFile.path
-            : path.join(await copyShadersToExternalDirectory, 'halftone.glsl');
+      case SuperResolutionType.efficiency: {
+        final baseDir = await copyShadersToExternalDirectory;
+        final targetShader = File(path.join(baseDir, 'halftone.glsl'));
+        try {
+          final data = await rootBundle.load('assets/shaders/halftone.glsl');
+          await targetShader.writeAsBytes(data.buffer.asUint8List(), flush: true);
+        } catch (_) {}
         return pp.command([
           'change-list',
           'glsl-shaders',
           'set',
-          shaderPath,
+          targetShader.path,
         ]);
+      }
+      case SuperResolutionType.quality: {
+        final baseDir = await copyShadersToExternalDirectory;
+        final targetShader = File(path.join(baseDir, 'halftone_custom.glsl'));
+        bool loaded = false;
+        if (Platform.isAndroid) {
+          final customFile = File('/sdcard/mpv/shaders/halftone.glsl');
+          if (await customFile.exists()) {
+            try {
+              final content = await customFile.readAsBytes();
+              await targetShader.writeAsBytes(content, flush: true);
+              loaded = true;
+            } catch (_) {}
+          }
+        }
+        if (!loaded) {
+          try {
+            final data = await rootBundle.load('assets/shaders/halftone.glsl');
+            await targetShader.writeAsBytes(data.buffer.asUint8List(), flush: true);
+          } catch (_) {}
+        }
+        return pp.command([
+          'change-list',
+          'glsl-shaders',
+          'set',
+          targetShader.path,
+        ]);
+      }
     }
   }
 
@@ -846,6 +876,9 @@ class PlPlayerController with BlockConfigMixin, AudioNormalizationMixin {
     final opt = {
       'video-sync': Pref.videoSync,
       if (Platform.isAndroid) 'ao': Pref.audioOutput,
+      // 上游 #3448 已改用 setVolumeCapped 防削波，此处不再设 volume，
+      // 否则绕过限幅逻辑。仅保留墨水屏需要的白色视频底。
+      'background-color': '#FFFFFF',
     };
     final autosync = Pref.autosync;
     if (autosync != '0') {
@@ -915,7 +948,7 @@ class PlPlayerController with BlockConfigMixin, AudioNormalizationMixin {
         return;
       }
       _videoPlayerController = player;
-      if (isAnim && superResolutionType.value != .disable) {
+      if (superResolutionType.value != .disable) {
         await setShader();
       }
     }

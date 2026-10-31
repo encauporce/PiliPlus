@@ -3,7 +3,7 @@ import 'package:PiliPlus/models/common/enum_with_label.dart';
 enum SuperResolutionType with EnumWithLabel {
   disable('关闭'),
   efficiency('开启网点'),
-  quality('开启网点'),
+  quality('自定义(/sdcard)'),
   ;
 
   @override
