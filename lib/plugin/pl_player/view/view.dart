@@ -493,7 +493,7 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
         () {
           final type = plPlayerController.superResolutionType.value;
           return PopupMenuButton<SuperResolutionType>(
-            tooltip: '超分辨率',
+            tooltip: '墨水屏网点',
             requestFocus: false,
             initialValue: type,
             color: Colors.black.withValues(alpha: 0.8),
@@ -871,7 +871,7 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
         isFullScreen || plPlayerController.isDesktopPip || maxWidth >= 500;
     final List<BottomControlType> userSpecifyItemRight = [
       if (isNotFileSource && plPlayerController.showDmChart) .dmChart,
-      if (plPlayerController.isAnim) .superResolution,
+      .superResolution,
       if (isNotFileSource && plPlayerController.showViewPoints) .viewPoints,
       if (isNotFileSource && anySeason) .episode,
       if (flag) .fit,
