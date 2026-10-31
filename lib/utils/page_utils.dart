@@ -495,21 +495,8 @@ abstract final class PageUtils {
             ),
           );
         },
-        transitionDuration: const Duration(milliseconds: 350),
-        transitionBuilder: (context, animation, secondaryAnimation, child) {
-          final begin = context.isPortrait
-              ? const Offset(0.0, 1.0)
-              : const Offset(1.0, 0.0);
-          return SlideTransition(
-            position: animation.drive(
-              Tween<Offset>(
-                begin: begin,
-                end: Offset.zero,
-              ).chain(CurveTween(curve: Curves.easeInOut)),
-            ),
-            child: child,
-          );
-        },
+        transitionDuration: Duration.zero,
+        transitionBuilder: (context, animation, secondaryAnimation, child) => child,
         settings: RouteSettings(arguments: Get.arguments),
       ),
     );

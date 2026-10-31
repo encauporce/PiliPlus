@@ -375,7 +375,13 @@ class HeaderControlState extends State<HeaderControl>
           child: Material(
             clipBehavior: Clip.hardEdge,
             color: theme.colorScheme.surface,
-            borderRadius: const BorderRadius.all(Radius.circular(12)),
+            shape: RoundedRectangleBorder(
+              borderRadius: const BorderRadius.all(Radius.circular(12)),
+              side: BorderSide(
+                color: theme.brightness == Brightness.dark ? Colors.white : Colors.black,
+                width: 1.0,
+              ),
+            ),
             child: ListView(
               padding: const EdgeInsets.symmetric(vertical: 14),
               children: [

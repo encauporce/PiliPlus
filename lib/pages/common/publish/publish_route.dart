@@ -6,15 +6,11 @@ class PublishRoute<T> extends PopupRoute<T> {
     required this.pageBuilder,
     this.barrierDismissible = true,
     this.barrierLabel,
-    this.barrierColor = const Color(0x80000000),
+    this.barrierColor = Colors.transparent,
     Duration? transitionDuration,
     this._transitionBuilder,
     super.settings,
-  }) : transitionDuration =
-           transitionDuration ??
-           (PlatformUtils.isDesktop
-               ? const Duration(milliseconds: 400)
-               : const Duration(milliseconds: 500));
+  }) : transitionDuration = transitionDuration ?? Duration.zero;
 
   final RoutePageBuilder pageBuilder;
 
@@ -55,14 +51,6 @@ class PublishRoute<T> extends PopupRoute<T> {
     if (_transitionBuilder != null) {
       return _transitionBuilder(context, animation, secondaryAnimation, child);
     }
-    return SlideTransition(
-      position: animation.drive(
-        Tween<Offset>(
-          begin: const Offset(0.0, 1.0),
-          end: Offset.zero,
-        ),
-      ),
-      child: child,
-    );
+    return child;
   }
 }

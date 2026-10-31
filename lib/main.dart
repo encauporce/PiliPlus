@@ -138,7 +138,14 @@ void main() async {
   Request.setCookie();
   RequestUtils.syncHistoryStatus();
 
-  SmartDialog.config.toast = SmartConfigToast(displayType: .onlyRefresh);
+  SmartDialog.config
+    ..toast = SmartConfigToast(
+      displayType: .onlyRefresh,
+      animationTime: Duration.zero,
+    )
+    ..custom = SmartConfigCustom(animationTime: Duration.zero)
+    ..attach = SmartConfigAttach(animationTime: Duration.zero)
+    ..loading = SmartConfigLoading(animationTime: Duration.zero);
 
   FocusManager.instance.addEarlyKeyEventHandler(_onKeyEvent);
 
@@ -320,9 +327,7 @@ class MyApp extends StatelessWidget {
         routeObserver,
         FlutterSmartDialog.observer,
       ],
-      scrollBehavior: PlatformUtils.isDesktop
-          ? const CustomScrollBehavior()
-          : null,
+      scrollBehavior: const NoOverscrollIndicator(),
     );
   }
 

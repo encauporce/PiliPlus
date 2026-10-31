@@ -10,15 +10,21 @@ class CustomToast extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = ColorScheme.of(context);
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final colorScheme = theme.colorScheme;
     return Container(
       margin: .only(
         bottom: MediaQuery.viewPaddingOf(context).bottom + 30,
       ),
       padding: const .symmetric(horizontal: 17, vertical: 10),
       decoration: BoxDecoration(
-        color: colorScheme.primaryContainer.withValues(alpha: toastOpacity),
+        color: colorScheme.primaryContainer,
         borderRadius: const .all(.circular(20)),
+        border: Border.all(
+          color: isDark ? Colors.white : Colors.black,
+          width: 1.0,
+        ),
       ),
       child: Text(
         msg,
@@ -40,12 +46,17 @@ class LoadingWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     final onSurfaceVariant = theme.colorScheme.onSurfaceVariant;
     return Container(
       padding: const .symmetric(horizontal: 30, vertical: 20),
       decoration: BoxDecoration(
-        color: theme.dialogTheme.backgroundColor,
+        color: theme.dialogTheme.backgroundColor ?? theme.colorScheme.surface,
         borderRadius: const .all(.circular(15)),
+        border: Border.all(
+          color: isDark ? Colors.white : Colors.black,
+          width: 1.0,
+        ),
       ),
       child: Column(
         spacing: 20,
@@ -72,11 +83,16 @@ class NotifyWarning extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     final onSurfaceVariant = theme.colorScheme.onSurfaceVariant;
     return Container(
       decoration: BoxDecoration(
         borderRadius: const .all(.circular(8)),
-        color: theme.dialogTheme.backgroundColor,
+        color: theme.dialogTheme.backgroundColor ?? theme.colorScheme.surface,
+        border: Border.all(
+          color: isDark ? Colors.white : Colors.black,
+          width: 1.0,
+        ),
       ),
       padding: const .symmetric(horizontal: 20, vertical: 10),
       child: Column(

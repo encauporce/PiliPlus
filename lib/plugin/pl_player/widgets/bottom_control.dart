@@ -74,8 +74,8 @@ class BottomControl extends StatelessWidget {
     final primary = colorScheme.isLight
         ? colorScheme.inversePrimary
         : colorScheme.primary;
-    final thumbGlowColor = primary.withAlpha(80);
-    final bufferedBarColor = primary.withValues(alpha: 0.4);
+    final thumbGlowColor = Colors.transparent;
+    final bufferedBarColor = colorScheme.isDark ? Colors.white38 : Colors.black26;
 
     final enableHover =
         PlatformUtils.isDesktop &&

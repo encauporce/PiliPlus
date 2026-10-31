@@ -147,7 +147,8 @@ class MiniScaffoldState extends State<MiniScaffold>
         (transitionAnimationController ??
               BottomSheet.createAnimationController(
                 this,
-                sheetAnimationStyle: sheetAnimationStyle,
+                sheetAnimationStyle:
+                    sheetAnimationStyle ?? AnimationStyle.noAnimation,
               ))
           ..forward();
     setState(() {
