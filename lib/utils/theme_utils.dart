@@ -57,6 +57,11 @@ abstract final class ThemeUtils {
       );
     }
 
+    final borderSide = BorderSide(
+      color: isDark ? Colors.white : Colors.black,
+      width: 1.0,
+    );
+
     final theme = ThemeData(
       useMaterial3: true,
       colorScheme: colorScheme,
@@ -79,10 +84,14 @@ abstract final class ThemeUtils {
         surfaceTintColor: isDark ? colorScheme.surfaceContainerHighest : null,
       ),
       snackBarTheme: SnackBarThemeData(
-        elevation: 20,
+        elevation: 0,
         actionTextColor: colorScheme.primary,
         closeIconColor: colorScheme.secondary,
         backgroundColor: colorScheme.secondaryContainer,
+        shape: RoundedRectangleBorder(
+          borderRadius: const BorderRadius.all(Radius.circular(8)),
+          side: borderSide,
+        ),
         contentTextStyle: TextStyle(
           fontFamily: fontFamily,
           fontWeight: fontWeight,
@@ -90,13 +99,22 @@ abstract final class ThemeUtils {
         ),
       ),
       popupMenuTheme: PopupMenuThemeData(
+        elevation: 0,
         surfaceTintColor: isDark ? colorScheme.surfaceContainerHighest : null,
+        shape: RoundedRectangleBorder(
+          borderRadius: const BorderRadius.all(Radius.circular(8)),
+          side: borderSide,
+        ),
       ),
       cardTheme: CardThemeData(
-        elevation: 1,
+        elevation: 0,
         margin: EdgeInsets.zero,
         shadowColor: Colors.transparent,
         surfaceTintColor: isDark ? colorScheme.onSurfaceVariant : null,
+        shape: RoundedRectangleBorder(
+          borderRadius: const BorderRadius.all(Radius.circular(8)),
+          side: borderSide,
+        ),
       ),
       progressIndicatorTheme: isDark
           ? ProgressIndicatorThemeData(
@@ -114,12 +132,19 @@ abstract final class ThemeUtils {
           color: colorScheme.onSurface,
         ),
         backgroundColor: colorScheme.surface,
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: const BorderRadius.all(Radius.circular(12)),
+          side: borderSide,
+        ),
         constraints: const BoxConstraints(minWidth: 280, maxWidth: 420),
       ),
       bottomSheetTheme: BottomSheetThemeData(
         backgroundColor: colorScheme.surface,
-        shape: const RoundedRectangleBorder(
+        elevation: 0,
+        shape: RoundedRectangleBorder(
           borderRadius: Style.bottomSheetRadius,
+          side: borderSide,
         ),
       ),
       // ignore: deprecated_member_use
@@ -131,9 +156,10 @@ abstract final class ThemeUtils {
           fontFamily: fontFamily,
           fontWeight: fontWeight,
         ),
-        decoration: const BoxDecoration(
-          color: Color(0xE6616161), // Colors.grey[700]!.withValues(alpha: 0.9)
-          borderRadius: BorderRadius.all(Radius.circular(4)),
+        decoration: BoxDecoration(
+          color: Colors.black,
+          border: Border.all(color: Colors.white, width: 1.0),
+          borderRadius: const BorderRadius.all(Radius.circular(4)),
         ),
       ),
       cupertinoOverrideTheme: CupertinoThemeData(
@@ -154,14 +180,94 @@ abstract final class ThemeUtils {
         collapsedShape: Border(),
       ),
       listTileTheme: const ListTileThemeData(controlAffinity: .leading),
-      filledButtonTheme: const FilledButtonThemeData(
+      filledButtonTheme: FilledButtonThemeData(
         style: ButtonStyle(
-          shadowColor: WidgetStatePropertyAll(Colors.transparent),
+          elevation: const WidgetStatePropertyAll(0),
+          shadowColor: const WidgetStatePropertyAll(Colors.transparent),
+          side: WidgetStatePropertyAll(borderSide),
+          shape: const WidgetStatePropertyAll(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8)),
+            ),
+          ),
+        ),
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ButtonStyle(
+          elevation: const WidgetStatePropertyAll(0),
+          shadowColor: const WidgetStatePropertyAll(Colors.transparent),
+          side: WidgetStatePropertyAll(borderSide),
+          shape: const WidgetStatePropertyAll(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8)),
+            ),
+          ),
+        ),
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: ButtonStyle(
+          side: WidgetStatePropertyAll(borderSide),
+          shape: const WidgetStatePropertyAll(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8)),
+            ),
+          ),
+        ),
+      ),
+      chipTheme: ChipThemeData(
+        elevation: 0,
+        pressElevation: 0,
+        side: borderSide,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(8)),
+        ),
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        border: OutlineInputBorder(
+          borderRadius: const BorderRadius.all(Radius.circular(8)),
+          borderSide: borderSide,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: const BorderRadius.all(Radius.circular(8)),
+          borderSide: borderSide,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: const BorderRadius.all(Radius.circular(8)),
+          borderSide: BorderSide(
+            color: isDark ? Colors.white : Colors.black,
+            width: 1.5,
+          ),
+        ),
+      ),
+      dividerTheme: DividerThemeData(
+        color: isDark ? Colors.white70 : Colors.black54,
+        thickness: 1.0,
+        space: 1.0,
+      ),
+      menuTheme: MenuThemeData(
+        style: MenuStyle(
+          elevation: const WidgetStatePropertyAll(0),
+          side: WidgetStatePropertyAll(borderSide),
+          shape: const WidgetStatePropertyAll(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8)),
+            ),
+          ),
+        ),
+      ),
+      dropdownMenuTheme: DropdownMenuThemeData(
+        menuStyle: MenuStyle(
+          elevation: const WidgetStatePropertyAll(0),
+          side: WidgetStatePropertyAll(borderSide),
         ),
       ),
       pageTransitionsTheme: const PageTransitionsTheme(
         builders: {
-          TargetPlatform.android: ZoomPageTransitionsBuilder(),
+          TargetPlatform.android: NoAnimationPageTransitionsBuilder(),
+          TargetPlatform.iOS: NoAnimationPageTransitionsBuilder(),
+          TargetPlatform.linux: NoAnimationPageTransitionsBuilder(),
+          TargetPlatform.macOS: NoAnimationPageTransitionsBuilder(),
+          TargetPlatform.windows: NoAnimationPageTransitionsBuilder(),
         },
       ),
     );
@@ -220,5 +326,20 @@ abstract final class ThemeUtils {
         ),
       ),
     );
+  }
+}
+
+class NoAnimationPageTransitionsBuilder extends PageTransitionsBuilder {
+  const NoAnimationPageTransitionsBuilder();
+
+  @override
+  Widget buildTransitions<T>(
+    PageRoute<T> route,
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+    Widget child,
+  ) {
+    return child;
   }
 }

@@ -14,8 +14,8 @@ class NetworkImgLayer extends StatelessWidget {
     required this.width,
     required this.height,
     this.type = .def,
-    this.fadeOutDuration = const Duration(milliseconds: 120),
-    this.fadeInDuration = const Duration(milliseconds: 120),
+    this.fadeOutDuration = Duration.zero,
+    this.fadeInDuration = Duration.zero,
     this.quality = 1,
     this.borderRadius = Style.mdRadius,
     this.getPlaceHolder,
@@ -46,12 +46,26 @@ class NetworkImgLayer extends StatelessWidget {
     final isAvatar = type == ImageType.avatar;
     if (src?.isNotEmpty == true) {
       Widget child = _buildImage(context, isEmote: isEmote, isAvatar: isAvatar);
+      final isDark = Theme.of(context).brightness == Brightness.dark;
+      final borderColor = isDark ? Colors.white38 : Colors.black26;
       if (isEmote) {
         return child;
       } else if (isAvatar) {
-        return ClipOval(child: child);
+        return Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(color: borderColor, width: 1.0),
+          ),
+          child: ClipOval(child: child),
+        );
       } else {
-        return ClipRRect(borderRadius: borderRadius, child: child);
+        return Container(
+          decoration: BoxDecoration(
+            borderRadius: borderRadius,
+            border: Border.all(color: borderColor, width: 1.0),
+          ),
+          child: ClipRRect(borderRadius: borderRadius, child: child),
+        );
       }
     } else {
       return getPlaceHolder?.call() ??
@@ -103,7 +117,7 @@ class NetworkImgLayer extends StatelessWidget {
       clipBehavior: isEmote ? Clip.none : Clip.antiAlias,
       decoration: BoxDecoration(
         shape: isAvatar ? BoxShape.circle : BoxShape.rectangle,
-        color: ColorScheme.of(context).onInverseSurface.withValues(alpha: 0.4),
+        color: ColorScheme.of(context).surfaceContainerHighest,
         borderRadius: isEmote || isAvatar ? null : borderRadius,
       ),
       child: Center(

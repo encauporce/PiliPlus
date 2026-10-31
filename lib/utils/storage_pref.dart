@@ -782,7 +782,7 @@ abstract final class Pref {
   static Transition get pageTransition =>
       Transition.values[_setting.get(
         SettingBoxKey.pageTransition,
-        defaultValue: Transition.native.index,
+        defaultValue: Transition.noTransition.index,
       )];
 
   static bool get enableQuickDouble =>

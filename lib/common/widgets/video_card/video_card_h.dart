@@ -46,7 +46,17 @@ class VideoCardH extends StatelessWidget {
             onLongPress: onLongPress,
             onSecondaryTap: PlatformUtils.isMobile ? null : onLongPress,
             onTap: onTap ?? () => pushVideoH(videoItem),
-            child: Padding(
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(
+                    color: theme.brightness == Brightness.dark
+                        ? const Color(0xFF333333)
+                        : const Color(0xFFE0E0E0),
+                    width: 0.5,
+                  ),
+                ),
+              ),
               padding: const .symmetric(
                 horizontal: Style.safeSpace,
                 vertical: 5,

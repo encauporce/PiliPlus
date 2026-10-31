@@ -742,6 +742,7 @@ class PlPlayerController with BlockConfigMixin, AudioNormalizationMixin {
       dataStatus.value = DataStatus.loading;
       // 初始化全屏方向
       _isVertical = isVertical ?? false;
+      _initVideoAlignment();
       _aid = aid;
       _bvid = bvid;
       this.cid = cid;
@@ -1007,6 +1008,7 @@ class PlPlayerController with BlockConfigMixin, AudioNormalizationMixin {
       }
     }
     _initVideoFit();
+    _initVideoAlignment();
 
     // 自动播放
     if (_autoPlay) {
@@ -1367,6 +1369,10 @@ class PlPlayerController with BlockConfigMixin, AudioNormalizationMixin {
   void toggleVideoAlignment(VideoAlignmentType value) {
     videoAlignment.value = value;
     setting.put(SettingBoxKey.videoAlignment, value.index);
+  }
+
+  void _initVideoAlignment() {
+    videoAlignment.value = Pref.videoAlignment;
   }
 
   /// 读取fit

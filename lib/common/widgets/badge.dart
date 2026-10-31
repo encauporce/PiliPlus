@@ -45,21 +45,22 @@ class PBadge extends StatelessWidget {
     final colorScheme = ColorScheme.of(context);
 
     final Color bgColor;
-    final Color color;
-    Color borderColor = Colors.transparent;
+    final isDark = colorScheme.isDark;
+    Color borderColor = isDark ? Colors.white : Colors.black;
 
     switch (type) {
       case PBadgeType.primary:
         bgColor = colorScheme.primary;
         color = colorScheme.onPrimary;
       case PBadgeType.secondary:
-        bgColor = colorScheme.secondaryContainer.withValues(alpha: 0.5);
+        bgColor = colorScheme.secondaryContainer;
         color = colorScheme.onSecondaryContainer;
       case PBadgeType.gray:
-        bgColor = Colors.black45;
+        bgColor = Colors.black;
         color = Colors.white;
+        borderColor = Colors.white;
       case PBadgeType.error:
-        if (colorScheme.isDark) {
+        if (isDark) {
           bgColor = colorScheme.errorContainer;
           color = colorScheme.onErrorContainer;
         } else {
@@ -78,7 +79,7 @@ class PBadge extends StatelessWidget {
         bgColor = colorScheme.freeColor;
         color = Colors.white;
       case PBadgeType.shop:
-        bgColor = colorScheme.secondaryContainer.withValues(alpha: 0.5);
+        bgColor = colorScheme.secondaryContainer;
         color = colorScheme.onSurfaceVariant;
     }
 

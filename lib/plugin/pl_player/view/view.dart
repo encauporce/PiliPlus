@@ -22,6 +22,7 @@ import 'package:PiliPlus/models/common/sponsor_block/action_type.dart';
 import 'package:PiliPlus/models/common/sponsor_block/post_segment_model.dart';
 import 'package:PiliPlus/models/common/sponsor_block/segment_type.dart';
 import 'package:PiliPlus/models/common/super_resolution_type.dart';
+import 'package:PiliPlus/models/common/video/video_alignment_type.dart';
 import 'package:PiliPlus/models/common/video/base_quality.dart';
 import 'package:PiliPlus/models/video/play/url.dart';
 import 'package:PiliPlus/models_new/video/video_detail/episode.dart' as ugc;
@@ -262,7 +263,7 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
 
     _animationController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 100),
+      duration: Duration.zero,
     );
     videoController = plPlayerController.videoController!;
 
@@ -496,7 +497,11 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
             tooltip: '墨水屏网点',
             requestFocus: false,
             initialValue: type,
-            color: Colors.black.withValues(alpha: 0.8),
+            color: Colors.black,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8)),
+              side: BorderSide(color: Colors.white, width: 1.0),
+            ),
             itemBuilder: (context) {
               return SuperResolutionType.values
                   .map(
@@ -595,7 +600,11 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
             tooltip: '画面比例',
             requestFocus: false,
             initialValue: fit,
-            color: Colors.black.withValues(alpha: 0.8),
+            color: Colors.black,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8)),
+              side: BorderSide(color: Colors.white, width: 1.0),
+            ),
             itemBuilder: (context) {
               return VideoFitType.values
                   .map(
@@ -626,6 +635,49 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
         },
       ),
 
+      /// 画面对齐
+      BottomControlType.alignment => Obx(
+        () {
+          final align = plPlayerController.videoAlignment.value;
+          return PopupMenuButton<VideoAlignmentType>(
+            tooltip: '画面对齐',
+            requestFocus: false,
+            initialValue: align,
+            color: Colors.black,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8)),
+              side: BorderSide(color: Colors.white, width: 1.0),
+            ),
+            itemBuilder: (context) {
+              return VideoAlignmentType.values
+                  .map(
+                    (alignment) => PopupMenuItem<VideoAlignmentType>(
+                      height: 35,
+                      padding: const EdgeInsets.only(left: 30),
+                      value: alignment,
+                      onTap: () => plPlayerController.toggleVideoAlignment(alignment),
+                      child: Text(
+                        alignment.label,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 13,
+                        ),
+                      ),
+                    ),
+                  )
+                  .toList();
+            },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Text(
+                align.label,
+                style: const TextStyle(color: Colors.white, fontSize: 13),
+              ),
+            ),
+          );
+        },
+      ),
+
       BottomControlType.aiTranslate => Obx(
         () {
           final list = videoDetailController.languages.value;
@@ -635,7 +687,11 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
               requestFocus: false,
               initialValue: videoDetailController.currLang.value,
               onSelected: videoDetailController.setLanguage,
-              color: Colors.black.withValues(alpha: 0.8),
+              color: Colors.black,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(8)),
+                side: BorderSide(color: Colors.white, width: 1.0),
+              ),
               itemBuilder: (context) => [
                 const PopupMenuItem<String>(
                   height: 35,
@@ -680,7 +736,11 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
               tooltip: '字幕',
               requestFocus: false,
               initialValue: val,
-              color: Colors.black.withValues(alpha: 0.8),
+              color: Colors.black,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(8)),
+                side: BorderSide(color: Colors.white, width: 1.0),
+              ),
               itemBuilder: (context) {
                 return [
                   PopupMenuItem<int>(
@@ -737,7 +797,11 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
           tooltip: '倍速',
           requestFocus: false,
           initialValue: plPlayerController.playbackSpeed,
-          color: Colors.black.withValues(alpha: 0.8),
+          color: Colors.black,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+            side: BorderSide(color: Colors.white, width: 1.0),
+          ),
           itemBuilder: (context) {
             return plPlayerController.speedList
                 .map(
@@ -783,7 +847,11 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
             tooltip: '画质',
             requestFocus: false,
             initialValue: currentVideoQa.code,
-            color: Colors.black.withValues(alpha: 0.8),
+            color: Colors.black,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8)),
+              side: BorderSide(color: Colors.white, width: 1.0),
+            ),
             itemBuilder: (context) {
               return List.generate(
                 videoFormat.length,
@@ -875,6 +943,7 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
       if (isNotFileSource && plPlayerController.showViewPoints) .viewPoints,
       if (isNotFileSource && anySeason) .episode,
       if (flag) .fit,
+      if (flag) .alignment,
       if (isNotFileSource) .aiTranslate,
       .subtitle,
       .speed,
@@ -1388,12 +1457,13 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
                     opacity: plPlayerController.longPressStatus.value
                         ? 1.0
                         : 0.0,
-                    duration: const Duration(milliseconds: 150),
+                    duration: Duration.zero,
                     child: Container(
                       padding: const EdgeInsets.all(6),
-                      decoration: const BoxDecoration(
-                        color: Color(0x88000000),
-                        borderRadius: BorderRadius.all(Radius.circular(16)),
+                      decoration: BoxDecoration(
+                        color: Colors.black,
+                        borderRadius: const BorderRadius.all(Radius.circular(16)),
+                        border: Border.all(color: Colors.white, width: 1.0),
                       ),
                       child: Obx(
                         () => Text(
@@ -1425,11 +1495,12 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
                   () => AnimatedOpacity(
                     curve: Curves.easeInOut,
                     opacity: plPlayerController.isSeeking.value ? 1.0 : 0.0,
-                    duration: const Duration(milliseconds: 150),
+                    duration: Duration.zero,
                     child: Container(
-                      decoration: const BoxDecoration(
-                        color: Color(0x88000000),
-                        borderRadius: BorderRadius.all(Radius.circular(64)),
+                      decoration: BoxDecoration(
+                        color: Colors.black,
+                        borderRadius: const BorderRadius.all(Radius.circular(64)),
+                        border: Border.all(color: Colors.white, width: 1.0),
                       ),
                       padding: const EdgeInsets.symmetric(
                         horizontal: 10,
@@ -1477,15 +1548,16 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
                 return AnimatedOpacity(
                   curve: Curves.easeInOut,
                   opacity: plPlayerController.volumeIndicator.value ? 1.0 : 0.0,
-                  duration: const Duration(milliseconds: 150),
+                  duration: Duration.zero,
                   child: Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 8,
                       vertical: 5,
                     ),
-                    decoration: const BoxDecoration(
-                      color: Color(0x88000000),
-                      borderRadius: BorderRadius.all(Radius.circular(64)),
+                    decoration: BoxDecoration(
+                      color: Colors.black,
+                      borderRadius: const BorderRadius.all(Radius.circular(64)),
+                      border: Border.all(color: Colors.white, width: 1.0),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -1526,15 +1598,16 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
               () => AnimatedOpacity(
                 curve: Curves.easeInOut,
                 opacity: _brightnessIndicator.value ? 1.0 : 0.0,
-                duration: const Duration(milliseconds: 150),
+                duration: Duration.zero,
                 child: Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 8,
                     vertical: 5,
                   ),
-                  decoration: const BoxDecoration(
-                    color: Color(0x88000000),
-                    borderRadius: BorderRadius.all(Radius.circular(64)),
+                  decoration: BoxDecoration(
+                    color: Colors.black,
+                    borderRadius: const BorderRadius.all(Radius.circular(64)),
+                    border: Border.all(color: Colors.white, width: 1.0),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -1637,8 +1710,11 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
                     child: FilledButton.tonal(
                       style: FilledButton.styleFrom(
                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        backgroundColor: colorScheme.secondaryContainer
-                            .withValues(alpha: 0.8),
+                        backgroundColor: colorScheme.secondaryContainer,
+                        side: BorderSide(
+                          color: colorScheme.isDark ? Colors.white : Colors.black,
+                          width: 1.0,
+                        ),
                         visualDensity: VisualDensity.compact,
                         padding: const EdgeInsets.all(15),
                         shape: const RoundedRectangleBorder(
@@ -1647,27 +1723,9 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
                           ),
                         ),
                       ),
-                      onPressed: () async {
+                      onPressed: () {
                         showRestoreScaleBtn.value = false;
-                        final animController = AnimationController(
-                          vsync: this,
-                          duration: const Duration(milliseconds: 255),
-                        );
-                        final anim = animController.drive(
-                          Matrix4Tween(
-                            begin: _transformationController.value,
-                            end: Matrix4.identity(),
-                          ).chain(CurveTween(curve: Curves.easeOut)),
-                        );
-                        void listener() {
-                          _transformationController.value = anim.value;
-                        }
-
-                        animController.addListener(listener);
-                        await animController.forward(from: 0);
-                        animController
-                          ..removeListener(listener)
-                          ..dispose();
+                        _transformationController.value = Matrix4.identity();
                       },
                       child: const Text('还原屏幕'),
                     ),
@@ -1788,9 +1846,10 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
                     () => Offstage(
                       offstage: !plPlayerController.showControls.value,
                       child: DecoratedBox(
-                        decoration: const BoxDecoration(
-                          color: Color(0x45000000),
-                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                        decoration: BoxDecoration(
+                          color: Colors.black,
+                          borderRadius: const BorderRadius.all(Radius.circular(8)),
+                          border: Border.all(color: Colors.white, width: 1.0),
                         ),
                         child: Obx(() {
                           final controlsLock =
@@ -1832,9 +1891,10 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
                     child: Offstage(
                       offstage: !plPlayerController.showControls.value,
                       child: DecoratedBox(
-                        decoration: const BoxDecoration(
-                          color: Color(0x45000000),
-                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                        decoration: BoxDecoration(
+                          color: Colors.black,
+                          borderRadius: const BorderRadius.all(Radius.circular(8)),
+                          border: Border.all(color: Colors.white, width: 1.0),
                         ),
                         child: ComBtn(
                           tooltip: '截图',
@@ -1866,11 +1926,10 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
                 onTap: plPlayerController.refreshPlayer,
                 child: Container(
                   padding: const EdgeInsets.all(20),
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    gradient: RadialGradient(
-                      colors: [Colors.black26, Colors.transparent],
-                    ),
+                    color: Colors.black,
+                    border: Border.all(color: Colors.white, width: 1.0),
                   ),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
