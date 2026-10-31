@@ -101,9 +101,8 @@ class ActionItem extends StatelessWidget {
     );
     if (hasText) {
       return AnimatedSwitcher(
-        duration: const Duration(milliseconds: 300),
-        transitionBuilder: (child, animation) =>
-            ScaleTransition(scale: animation, child: child),
+        duration: Duration.zero,
+        transitionBuilder: (child, animation) => child,
         child: child,
       );
     }

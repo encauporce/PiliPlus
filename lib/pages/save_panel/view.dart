@@ -49,13 +49,8 @@ class SavePanel extends StatefulWidget {
         pageBuilder: (context, animation, secondaryAnimation) {
           return SavePanel(upMid: upMid, item: item);
         },
-        transitionDuration: const Duration(milliseconds: 255),
-        transitionBuilder: (context, animation, secondaryAnimation, child) {
-          return FadeTransition(
-            opacity: animation.drive(CurveTween(curve: Curves.easeInOut)),
-            child: child,
-          );
-        },
+        transitionDuration: Duration.zero,
+        transitionBuilder: (context, animation, secondaryAnimation, child) => child,
         settings: RouteSettings(arguments: Get.arguments),
       ),
     );

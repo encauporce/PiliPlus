@@ -71,11 +71,10 @@ class BottomControl extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = ColorScheme.of(context);
-    final primary = colorScheme.isLight
-        ? colorScheme.inversePrimary
-        : colorScheme.primary;
+    final primary = Colors.white;
     final thumbGlowColor = Colors.transparent;
-    final bufferedBarColor = colorScheme.isDark ? Colors.white38 : Colors.black26;
+    final bufferedBarColor = const Color(0xFF888888);
+    final baseBarColor = const Color(0xFF444444);
 
     final enableHover =
         PlatformUtils.isDesktop &&
@@ -102,7 +101,7 @@ class BottomControl extends StatelessWidget {
                         buffered: controller.buffered.value,
                         total: controller.duration.value,
                         progressBarColor: primary,
-                        baseBarColor: const Color(0x33FFFFFF),
+                        baseBarColor: baseBarColor,
                         bufferedBarColor: bufferedBarColor,
                         thumbColor: primary,
                         thumbGlowColor: thumbGlowColor,

@@ -23,7 +23,7 @@ class ExpandablePanel extends StatelessWidget {
       secondChild: expanded,
       sizeCurve: Curves.linear,
       crossFadeState: expand ? .showSecond : .showFirst,
-      duration: const Duration(milliseconds: 300),
+      duration: Duration.zero,
     );
   }
 }

@@ -224,13 +224,28 @@ class _MainAppState extends PopScopeState<MainApp>
           return Obx(
             () => AnimatedSlide(
               curve: Curves.easeInOutCubicEmphasized,
-              duration: const Duration(milliseconds: 500),
+              duration: Duration.zero,
               offset: Offset(0, showBottomBar.value ? 0 : 1),
               child: bottomNav,
             ),
           );
         }
       }
+    }
+
+    if (bottomNav != null) {
+      final isDark = Theme.of(context).brightness == Brightness.dark;
+      bottomNav = Container(
+        decoration: BoxDecoration(
+          border: Border(
+            top: BorderSide(
+              color: isDark ? Colors.white : Colors.black,
+              width: 1.0,
+            ),
+          ),
+        ),
+        child: bottomNav,
+      );
     }
 
     return bottomNav;

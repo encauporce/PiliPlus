@@ -73,6 +73,7 @@ abstract final class ThemeUtils {
         centerTitle: false,
         scrolledUnderElevation: 0,
         backgroundColor: colorScheme.surface,
+        shape: Border(bottom: borderSide),
         titleTextStyle: TextStyle(
           fontSize: 16,
           fontWeight: fontWeight,
@@ -82,6 +83,25 @@ abstract final class ThemeUtils {
       ),
       navigationBarTheme: NavigationBarThemeData(
         surfaceTintColor: isDark ? colorScheme.surfaceContainerHighest : null,
+        elevation: 0,
+        indicatorShape: RoundedRectangleBorder(
+          borderRadius: const BorderRadius.all(Radius.circular(16)),
+          side: borderSide,
+        ),
+      ),
+      bottomNavigationBarTheme: BottomNavigationBarThemeData(
+        elevation: 0,
+        backgroundColor: colorScheme.surface,
+        selectedItemColor: isDark ? Colors.white : Colors.black,
+        unselectedItemColor: isDark ? Colors.white70 : Colors.black54,
+      ),
+      tabBarTheme: TabBarThemeData(
+        indicatorColor: isDark ? Colors.white : Colors.black,
+        indicatorSize: TabBarIndicatorSize.label,
+        dividerColor: isDark ? Colors.white24 : Colors.black12,
+        dividerHeight: 1.0,
+        labelColor: isDark ? Colors.white : Colors.black,
+        unselectedLabelColor: isDark ? Colors.white70 : Colors.black54,
       ),
       snackBarTheme: SnackBarThemeData(
         elevation: 0,
@@ -125,6 +145,7 @@ abstract final class ThemeUtils {
           // ignore: deprecated_member_use
           : const ProgressIndicatorThemeData(year2023: false),
       dialogTheme: DialogThemeData(
+        barrierColor: Colors.transparent,
         titleTextStyle: TextStyle(
           fontSize: 18,
           fontWeight: fontWeight,
@@ -140,6 +161,7 @@ abstract final class ThemeUtils {
         constraints: const BoxConstraints(minWidth: 280, maxWidth: 420),
       ),
       bottomSheetTheme: BottomSheetThemeData(
+        barrierColor: Colors.transparent,
         backgroundColor: colorScheme.surface,
         elevation: 0,
         shape: RoundedRectangleBorder(
@@ -165,21 +187,64 @@ abstract final class ThemeUtils {
       cupertinoOverrideTheme: CupertinoThemeData(
         selectionHandleColor: colorScheme.primary,
       ),
-      switchTheme: const SwitchThemeData(
+      switchTheme: SwitchThemeData(
         padding: .zero,
         materialTapTargetSize: .shrinkWrap,
-        thumbIcon: WidgetStateProperty<Icon?>.fromMap(
+        trackOutlineColor: WidgetStateProperty.resolveWith(
+          (states) => isDark ? Colors.white : Colors.black,
+        ),
+        trackOutlineWidth: const WidgetStatePropertyAll(1.5),
+        thumbColor: WidgetStateProperty.resolveWith(
+          (states) => states.contains(WidgetState.selected)
+              ? (isDark ? Colors.black : Colors.white)
+              : (isDark ? Colors.white : Colors.black),
+        ),
+        trackColor: WidgetStateProperty.resolveWith(
+          (states) => states.contains(WidgetState.selected)
+              ? (isDark ? Colors.white : Colors.black)
+              : Colors.transparent,
+        ),
+        thumbIcon: const WidgetStateProperty<Icon?>.fromMap(
           <WidgetStatesConstraint, Icon?>{
             WidgetState.selected: Icon(Icons.done),
             WidgetState.any: null,
           },
         ),
       ),
+      checkboxTheme: CheckboxThemeData(
+        side: borderSide,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(4)),
+        ),
+        fillColor: WidgetStateProperty.resolveWith(
+          (states) => states.contains(WidgetState.selected)
+              ? (isDark ? Colors.white : Colors.black)
+              : Colors.transparent,
+        ),
+        checkColor: WidgetStateProperty.resolveWith(
+          (states) => isDark ? Colors.black : Colors.white,
+        ),
+      ),
+      radioTheme: RadioThemeData(
+        fillColor: WidgetStateProperty.resolveWith(
+          (states) => states.contains(WidgetState.selected)
+              ? (isDark ? Colors.white : Colors.black)
+              : (isDark ? Colors.white70 : Colors.black54),
+        ),
+      ),
       expansionTileTheme: const ExpansionTileThemeData(
         shape: Border(),
         collapsedShape: Border(),
       ),
-      listTileTheme: const ListTileThemeData(controlAffinity: .leading),
+      listTileTheme: ListTileThemeData(
+        controlAffinity: .leading,
+        shape: Border(
+          bottom: BorderSide(
+            color: isDark ? const Color(0xFF444444) : const Color(0xFFDDDDDD),
+            width: 1.0,
+          ),
+        ),
+      ),
       filledButtonTheme: FilledButtonThemeData(
         style: ButtonStyle(
           elevation: const WidgetStatePropertyAll(0),
@@ -214,6 +279,30 @@ abstract final class ThemeUtils {
           ),
         ),
       ),
+      textButtonTheme: TextButtonThemeData(
+        style: ButtonStyle(
+          side: WidgetStatePropertyAll(borderSide),
+          shape: const WidgetStatePropertyAll(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8)),
+            ),
+          ),
+        ),
+      ),
+      segmentedButtonTheme: SegmentedButtonThemeData(
+        style: ButtonStyle(
+          side: WidgetStatePropertyAll(borderSide),
+        ),
+      ),
+      searchBarTheme: SearchBarThemeData(
+        elevation: const WidgetStatePropertyAll(0),
+        side: WidgetStatePropertyAll(borderSide),
+        shape: const WidgetStatePropertyAll(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+          ),
+        ),
+      ),
       chipTheme: ChipThemeData(
         elevation: 0,
         pressElevation: 0,
@@ -240,7 +329,7 @@ abstract final class ThemeUtils {
         ),
       ),
       dividerTheme: DividerThemeData(
-        color: isDark ? Colors.white70 : Colors.black54,
+        color: isDark ? Colors.white : Colors.black,
         thickness: 1.0,
         space: 1.0,
       ),
