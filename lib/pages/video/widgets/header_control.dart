@@ -17,6 +17,7 @@ import 'package:PiliPlus/http/live.dart';
 import 'package:PiliPlus/http/loading_state.dart';
 import 'package:PiliPlus/http/video.dart';
 import 'package:PiliPlus/models/common/super_resolution_type.dart';
+import 'package:PiliPlus/models/common/video/video_alignment_type.dart';
 import 'package:PiliPlus/models/common/video/base_quality.dart';
 import 'package:PiliPlus/models/common/video/cdn_type.dart';
 import 'package:PiliPlus/models/common/video/video_decode_type.dart';
@@ -475,7 +476,7 @@ class HeaderControlState extends State<HeaderControl>
                     Icons.stay_current_landscape_outlined,
                     size: 20,
                   ),
-                  title: const Text('超分辨率', style: titleStyle),
+                  title: const Text('墨水屏网点', style: titleStyle),
                   titleStyle: theme.textTheme.bodyLarge,
                   value: () {
                     final value = plPlayerController.superResolutionType.value;
@@ -486,6 +487,28 @@ class HeaderControlState extends State<HeaderControl>
                   ),
                   onSelected: (value, setState) {
                     plPlayerController.setShader(value);
+                    setState();
+                  },
+                  descPosType: .subtitle,
+                  descStyle: subTitleStyle,
+                ),
+                PopupListTile<VideoAlignmentType>(
+                  dense: true,
+                  leading: const Icon(
+                    Icons.format_align_center,
+                    size: 20,
+                  ),
+                  title: const Text('画面对齐', style: titleStyle),
+                  titleStyle: theme.textTheme.bodyLarge,
+                  value: () {
+                    final value = plPlayerController.videoAlignment.value;
+                    return (value, value.label);
+                  },
+                  itemBuilder: (_) => enumItemBuilder(
+                    VideoAlignmentType.values,
+                  ),
+                  onSelected: (value, setState) {
+                    plPlayerController.toggleVideoAlignment(value);
                     setState();
                   },
                   descPosType: .subtitle,

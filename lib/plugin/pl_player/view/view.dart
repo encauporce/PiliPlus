@@ -97,7 +97,7 @@ class PLVideoPlayer extends StatefulWidget {
     this.danmuWidget,
     this.showEpisodes,
     this.showViewPoints,
-    this.fill = Colors.black,
+    this.fill = Colors.white,
     this.alignment = Alignment.center,
     super.key,
   });
@@ -2029,12 +2029,13 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
             child: Obx(
               () {
                 final videoFit = plPlayerController.videoFit.value;
+                final videoAlign = plPlayerController.videoAlignment.value;
                 return Transform.flip(
                   flipX: plPlayerController.flipX.value,
                   flipY: plPlayerController.flipY.value,
                   child: FittedBox(
                     fit: videoFit.boxFit,
-                    alignment: widget.alignment,
+                    alignment: videoAlign.alignment,
                     child: SimpleVideo(
                       controller: plPlayerController.videoController!,
                       fill: widget.fill,

@@ -1,6 +1,7 @@
 import 'dart:async' show StreamSubscription, Timer;
 import 'dart:convert' show ascii, utf8;
-import 'dart:io' show Platform;
+import 'dart:io' show File, Platform;
+import 'package:PiliPlus/models/common/video/video_alignment_type.dart';
 import 'dart:math' show max, min;
 import 'dart:ui' as ui;
 
@@ -133,6 +134,7 @@ class PlPlayerController with BlockConfigMixin, AudioNormalizationMixin {
   bool _isVertical = false;
 
   final Rx<VideoFitType> videoFit = Rx(.contain);
+  final Rx<VideoAlignmentType> videoAlignment = Rx(Pref.videoAlignment);
 
   late final RxBool continuePlayInBackground =
       Pref.continuePlayInBackground.obs;
@@ -802,20 +804,21 @@ class PlPlayerController with BlockConfigMixin, AudioNormalizationMixin {
 
     return shadersDirPath = await AssetUtils.getOrCopy(
       'assets/shaders',
-      Assets.mpvAnime4KShaders.followedBy(Assets.mpvAnime4KShadersLite),
+      Assets.mpvEinkShaders.followedBy(Assets.mpvAnime4KShaders).followedBy(Assets.mpvAnime4KShadersLite),
       path.join(appSupportDirPath, 'anime_shaders'),
     );
   }
 
   late final isAnim = _pgcType == 1 || _pgcType == 4;
   late final Rx<SuperResolutionType> superResolutionType =
-      (isAnim ? Pref.superResolutionType : SuperResolutionType.disable).obs;
+      Pref.superResolutionType.obs;
+
   Future<void> setShader([SuperResolutionType? type, NativePlayer? pp]) async {
     if (type == null) {
       type = superResolutionType.value;
     } else {
       superResolutionType.value = type;
-      if (isAnim && !tempPlayerConf) {
+      if (!tempPlayerConf) {
         setting.put(SettingBoxKey.superResolutionType, type.index);
       }
     }
@@ -824,24 +827,16 @@ class PlPlayerController with BlockConfigMixin, AudioNormalizationMixin {
       case SuperResolutionType.disable:
         return pp.command(const ['change-list', 'glsl-shaders', 'clr', '']);
       case SuperResolutionType.efficiency:
-        return pp.command([
-          'change-list',
-          'glsl-shaders',
-          'set',
-          PathUtils.buildShadersAbsolutePath(
-            await copyShadersToExternalDirectory,
-            Assets.mpvAnime4KShadersLite,
-          ),
-        ]);
       case SuperResolutionType.quality:
+        final customFile = File('/sdcard/mpv/shaders/halftone.glsl');
+        final shaderPath = (Platform.isAndroid && await customFile.exists())
+            ? customFile.path
+            : path.join(await copyShadersToExternalDirectory, 'halftone.glsl');
         return pp.command([
           'change-list',
           'glsl-shaders',
           'set',
-          PathUtils.buildShadersAbsolutePath(
-            await copyShadersToExternalDirectory,
-            Assets.mpvAnime4KShaders,
-          ),
+          shaderPath,
         ]);
     }
   }
@@ -885,6 +880,7 @@ class PlPlayerController with BlockConfigMixin, AudioNormalizationMixin {
       // Avoid sizing the surface using mpv's idle window between media loads.
       player.setProperty('force-window', 'no');
     }
+    player.setProperty('background-color', '#FFFFFF');
 
     player.setMediaHeader(userAgent: BrowserUa.pc, referer: HttpString.baseUrl);
 
@@ -1341,6 +1337,11 @@ class PlPlayerController with BlockConfigMixin, AudioNormalizationMixin {
   void toggleVideoFit(VideoFitType value) {
     _prefFit = videoFit.value = value;
     video.put(VideoBoxKey.cacheVideoFit, value.index);
+  }
+
+  void toggleVideoAlignment(VideoAlignmentType value) {
+    videoAlignment.value = value;
+    setting.put(SettingBoxKey.videoAlignment, value.index);
   }
 
   /// 读取fit
