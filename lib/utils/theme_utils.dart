@@ -161,7 +161,6 @@ abstract final class ThemeUtils {
         constraints: const BoxConstraints(minWidth: 280, maxWidth: 420),
       ),
       bottomSheetTheme: BottomSheetThemeData(
-        barrierColor: Colors.transparent,
         backgroundColor: colorScheme.surface,
         elevation: 0,
         shape: RoundedRectangleBorder(
