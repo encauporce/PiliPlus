@@ -875,7 +875,7 @@ class PlPlayerController with BlockConfigMixin, AudioNormalizationMixin {
     String ao = Pref.audioOutput;
     if (Platform.isAndroid && (ao.isEmpty || ao.startsWith('opensles'))) {
       ao = AudioOutput.defaultValue;
-      Pref.audioOutput = ao;
+      setting.put(SettingBoxKey.audioOutput, ao);
     }
     final opt = {
       'video-sync': Pref.videoSync,
@@ -1493,7 +1493,7 @@ class PlPlayerController with BlockConfigMixin, AudioNormalizationMixin {
           'height': targetH.toString(),
         },
       );
-      await _videoPlayerController?.setProperty(
+      _videoPlayerController?.setProperty(
         'android-surface-size',
         '${targetW}x$targetH',
       );
