@@ -1391,6 +1391,12 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
   Widget build(BuildContext context) {
     maxWidth = widget.maxWidth;
     maxHeight = widget.maxHeight;
+    final dpr = MediaQuery.devicePixelRatioOf(context);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        plPlayerController.syncPhysicalSurfaceSize(maxWidth, maxHeight, dpr);
+      }
+    });
     final isFullScreen = this.isFullScreen;
     final primary = isFullScreen && colorScheme.isLight
         ? colorScheme.inversePrimary
@@ -2094,6 +2100,7 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
                       controller: plPlayerController.videoController!,
                       fill: widget.fill,
                       aspectRatio: videoFit.aspectRatio,
+                      filterQuality: FilterQuality.none,
                     ),
                   ),
                 );

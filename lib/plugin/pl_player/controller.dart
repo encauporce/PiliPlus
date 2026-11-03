@@ -1,7 +1,8 @@
 import 'dart:async' show StreamSubscription, Timer;
 import 'dart:convert' show ascii, utf8;
 import 'dart:io' show File, Platform;
-import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter/services.dart' show MethodChannel, rootBundle;
+import 'package:PiliPlus/plugin/pl_player/models/audio_output_type.dart';
 import 'package:PiliPlus/models/common/video/video_alignment_type.dart';
 import 'dart:math' show max, min;
 import 'dart:ui' as ui;
@@ -871,9 +872,14 @@ class PlPlayerController with BlockConfigMixin, AudioNormalizationMixin {
 
   Future<Player> _initPlayer() async {
     assert(_videoPlayerController == null);
+    String ao = Pref.audioOutput;
+    if (Platform.isAndroid && (ao.isEmpty || ao.startsWith('opensles'))) {
+      ao = AudioOutput.defaultValue;
+      Pref.audioOutput = ao;
+    }
     final opt = {
       'video-sync': Pref.videoSync,
-      if (Platform.isAndroid) 'ao': Pref.audioOutput,
+      if (Platform.isAndroid) 'ao': ao,
       'volume':
           (PlatformUtils.isMobile ? Pref.playerVolume : volume.value * 100)
               .toString(),
@@ -1057,6 +1063,20 @@ class PlPlayerController with BlockConfigMixin, AudioNormalizationMixin {
     assert(_subscriptions == null);
     final stream = player.stream;
     _subscriptions = [
+      if (Platform.isAndroid)
+        stream.videoParams.listen((params) {
+          Future.microtask(() {
+            if (_lastViewportWidth != null &&
+                _lastViewportHeight != null &&
+                _lastDpr != null) {
+              syncPhysicalSurfaceSize(
+                _lastViewportWidth!,
+                _lastViewportHeight!,
+                _lastDpr!,
+              );
+            }
+          });
+        }),
       /// playing
       stream.playing.listen((bool playing) {
         if (playing) {
@@ -1364,6 +1384,130 @@ class PlPlayerController with BlockConfigMixin, AudioNormalizationMixin {
   void toggleVideoFit(VideoFitType value) {
     _prefFit = videoFit.value = value;
     video.put(VideoBoxKey.cacheVideoFit, value.index);
+    if (_lastViewportWidth != null &&
+        _lastViewportHeight != null &&
+        _lastDpr != null) {
+      syncPhysicalSurfaceSize(
+        _lastViewportWidth!,
+        _lastViewportHeight!,
+        _lastDpr!,
+      );
+    }
+  }
+
+  double? _lastViewportWidth;
+  double? _lastViewportHeight;
+  double? _lastDpr;
+
+  Future<void> syncPhysicalSurfaceSize(
+    double logicalWidth,
+    double logicalHeight,
+    double dpr,
+  ) async {
+    _lastViewportWidth = logicalWidth;
+    _lastViewportHeight = logicalHeight;
+    _lastDpr = dpr;
+
+    if (!Platform.isAndroid ||
+        _videoPlayerController == null ||
+        _videoController == null) {
+      return;
+    }
+
+    final physicalW = logicalWidth * dpr;
+    final physicalH = logicalHeight * dpr;
+    if (physicalW <= 0 || physicalH <= 0) return;
+
+    final state = _videoPlayerController!.state;
+    final int vw = state.width > 0 ? state.width : 16;
+    final int vh = state.height > 0 ? state.height : 9;
+    final fit = videoFit.value;
+    final double ar = fit.aspectRatio ?? (vw / vh);
+
+    int targetW, targetH;
+    switch (fit) {
+      case VideoFitType.fill:
+        targetW = physicalW.round();
+        targetH = physicalH.round();
+        break;
+      case VideoFitType.cover:
+        if (physicalW / physicalH > ar) {
+          targetW = physicalW.round();
+          targetH = (physicalW / ar).round();
+        } else {
+          targetH = physicalH.round();
+          targetW = (physicalH * ar).round();
+        }
+        break;
+      case VideoFitType.fitWidth:
+        targetW = physicalW.round();
+        targetH = (physicalW / ar).round();
+        break;
+      case VideoFitType.fitHeight:
+        targetH = physicalH.round();
+        targetW = (physicalH * ar).round();
+        break;
+      case VideoFitType.none:
+        targetW = vw;
+        targetH = vh;
+        break;
+      case VideoFitType.contain:
+      case VideoFitType.scaleDown:
+      case VideoFitType.ratio_4x3:
+      case VideoFitType.ratio_16x9:
+        if (physicalW / physicalH > ar) {
+          targetH = physicalH.round();
+          targetW = (physicalH * ar).round();
+        } else {
+          targetW = physicalW.round();
+          targetH = (physicalW / ar).round();
+        }
+        break;
+    }
+
+    // Ensure even dimensions for video surface buffers
+    targetW = (targetW & ~1);
+    targetH = (targetH & ~1);
+
+    if (targetW <= 0 || targetH <= 0) return;
+
+    final curRect = _videoController?.rect.value;
+    if (curRect != null &&
+        (curRect.width.round() - targetW).abs() <= 1 &&
+        (curRect.height.round() - targetH).abs() <= 1) {
+      return;
+    }
+
+    try {
+      final handle = await _videoPlayerController?.handle;
+      if (handle == null ||
+          _videoPlayerController == null ||
+          _videoController == null) {
+        return;
+      }
+      const MethodChannel('com.alexmercerind/media_kit_video').invokeMethod(
+        'VideoOutputManager.SetSurfaceTextureSize',
+        {
+          'handle': handle.toString(),
+          'width': targetW.toString(),
+          'height': targetH.toString(),
+        },
+      );
+      await _videoPlayerController?.setProperty(
+        'android-surface-size',
+        '${targetW}x$targetH',
+      );
+      if (_videoController != null) {
+        _videoController!.rect.value = Rect.fromLTWH(
+          0.0,
+          0.0,
+          targetW.toDouble(),
+          targetH.toDouble(),
+        );
+      }
+    } catch (e) {
+      debugPrint('syncPhysicalSurfaceSize: $e');
+    }
   }
 
   void toggleVideoAlignment(VideoAlignmentType value) {
