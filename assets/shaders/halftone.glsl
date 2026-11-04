@@ -27,6 +27,7 @@
 // 1. 【Tone Mapping & Contrast / 影调与反差控制】
 #define DARK_LIFT_MIN       0.050     // Deep Ink Floor (12.8/255): Anchors punchy solid black / 深墨底电平
 #define DARK_LIFT_GAMMA     0.52      // Gamma Expansion (0.52): Brightens shadows & midtones / 影调展开伽马
+#define MID_CONTRAST_BOOST  0.35      // Midtone Contrast Boost (0.35): S-curve steepens mid-range response / 中频中间调反差增强
 #define WHITE_SHOULDER      0.14      // White Shoulder Boost (0.14): Cleanses highlights to pure white / 高光肩部提拉增益
 #define SHADOW_TOE_BOOST    0.12      // Shadow Toe Boost (0.12): Unlocks subtle dark details / 极暗部平滑趾部提拉
 #define TEMPORAL_DARK_BOOST 1.60      // Dark Agitation Multiplier: Enhances de-polarization / 暗部时域震荡增强倍率
@@ -100,10 +101,11 @@ vec4 hook() {
     float mean_neighbor = (tl + t + tr + l + r + bl + b + br) / 8.0;
     float high_pass = c - mean_neighbor;
 
-    // 3. Option B Deep Ink Tone Mapping with White Shoulder & Shadow Toe Boost
-    float toe = sqrt(c) * pow(1.0 - c, 2.0) * SHADOW_TOE_BOOST;
-    float shoulder = pow(c, 2.0) * WHITE_SHOULDER;
-    float norm_curve = clamp(pow(c, DARK_LIFT_GAMMA) + toe + shoulder, 0.0, 1.0);
+    // 3. Option B Deep Ink Tone Mapping with White Shoulder, Shadow Toe & Midtone Contrast Boost
+    float c_mid = mix(c, smoothstep(0.0, 1.0, c), MID_CONTRAST_BOOST);
+    float toe = sqrt(c_mid) * pow(1.0 - c_mid, 2.0) * SHADOW_TOE_BOOST;
+    float shoulder = pow(c_mid, 2.0) * WHITE_SHOULDER;
+    float norm_curve = clamp(pow(c_mid, DARK_LIFT_GAMMA) + toe + shoulder, 0.0, 1.0);
     float luma_lifted = DARK_LIFT_MIN + (1.0 - DARK_LIFT_MIN) * norm_curve;
 
     // 4. Clustered Halftone with Anti-Ghosting Phase Modulation
