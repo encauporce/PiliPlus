@@ -836,6 +836,8 @@ class PlPlayerController with BlockConfigMixin, AudioNormalizationMixin {
           final data = await rootBundle.load('assets/shaders/halftone.glsl');
           await targetShader.writeAsBytes(data.buffer.asUint8List(), flush: true);
         } catch (_) {}
+        SmartDialog.showToast('已加载内置网点');
+        await pp.command(const ['change-list', 'glsl-shaders', 'clr', '']);
         return pp.command([
           'change-list',
           'glsl-shaders',
@@ -847,22 +849,38 @@ class PlPlayerController with BlockConfigMixin, AudioNormalizationMixin {
         final baseDir = await copyShadersToExternalDirectory;
         final targetShader = File(path.join(baseDir, 'halftone_custom.glsl'));
         bool loaded = false;
+        String loadedPath = '';
         if (Platform.isAndroid) {
-          final customFile = File('/sdcard/mpv/shaders/halftone.glsl');
-          if (await customFile.exists()) {
+          final candidates = [
+            File('/sdcard/mpv/shaders/halftone.glsl'),
+            File('/storage/emulated/0/mpv/shaders/halftone.glsl'),
+            File('/sdcard/Android/data/com.example.piliplus/files/shaders/halftone.glsl'),
+            File('/storage/emulated/0/Android/data/com.example.piliplus/files/shaders/halftone.glsl'),
+          ];
+          for (final customFile in candidates) {
             try {
-              final content = await customFile.readAsBytes();
-              await targetShader.writeAsBytes(content, flush: true);
-              loaded = true;
+              if (await customFile.exists()) {
+                final content = await customFile.readAsBytes();
+                if (content.isNotEmpty) {
+                  await targetShader.writeAsBytes(content, flush: true);
+                  loaded = true;
+                  loadedPath = customFile.path;
+                  break;
+                }
+              }
             } catch (_) {}
           }
         }
-        if (!loaded) {
+        if (loaded) {
+          SmartDialog.showToast('已加载SD卡着色器: $loadedPath');
+        } else {
+          SmartDialog.showToast('未检测到SD卡着色器，已回退内置网点');
           try {
             final data = await rootBundle.load('assets/shaders/halftone.glsl');
             await targetShader.writeAsBytes(data.buffer.asUint8List(), flush: true);
           } catch (_) {}
         }
+        await pp.command(const ['change-list', 'glsl-shaders', 'clr', '']);
         return pp.command([
           'change-list',
           'glsl-shaders',
