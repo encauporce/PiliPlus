@@ -124,9 +124,8 @@ abstract final class ThemeUtils {
       tabBarTheme: TabBarThemeData(
         indicatorColor: isDark ? Colors.white : Colors.black,
         indicatorSize: TabBarIndicatorSize.label,
-        // 墨水屏上去掉颜色后，选中态只能靠「加粗 + 粗下划线」表达，
+        // 墨水屏上去掉颜色后，选中态只能靠「加粗 + 更明显的下划线」表达，
         // 默认 2dp 指示条和页签底部的 1dp 分割线太接近，看不出来。
-        indicatorWeight: 3,
         labelStyle: const TextStyle(fontWeight: FontWeight.w600),
         unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.w400),
         dividerColor: isDark ? Colors.white24 : Colors.black,

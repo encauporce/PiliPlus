@@ -9,6 +9,7 @@ import 'package:flutter/rendering.dart'
         InlineSpan,
         TextScaler,
         TextPainter,
+        TextDecoration,
         VoidCallback,
         HitTestEntry,
         RenderParagraph,
