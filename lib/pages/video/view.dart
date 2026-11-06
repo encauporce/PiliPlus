@@ -1376,7 +1376,9 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(
-            color: theme.dividerColor.withValues(alpha: 0.1),
+            // 墨水屏：原来 10% 透明度的分割线在黑白屏上几乎看不见，
+            // 评论区顶部被裁切的半行因此没有边界，改为实心 1dp。
+            color: theme.colorScheme.outline,
           ),
         ),
       ),

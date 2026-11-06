@@ -41,6 +41,10 @@ class _DynamicsPageState extends CommonPageState<DynamicsPage>
             backgroundColor: WidgetStatePropertyAll(
               colorScheme.secondaryContainer,
             ),
+            // 墨水屏：浅绿底在黑白屏上是一块灰，补 1dp 黑边
+            side: WidgetStatePropertyAll(
+              BorderSide(color: colorScheme.outline, width: 1.0),
+            ),
           ),
           onPressed: () => CreateDynPanel.onCreateDyn(context),
           icon: Icon(
@@ -54,11 +58,12 @@ class _DynamicsPageState extends CommonPageState<DynamicsPage>
   Widget upPanelPart(ColorScheme colorScheme) {
     final isTop = upPanelPosition == .top;
     final needBg = upPanelPosition.index > 2;
-    return Material(
+    final panel = Material(
       type: needBg ? .canvas : .transparency,
       color: needBg ? colorScheme.surface : null,
       child: SizedBox(
-        width: isTop ? null : 64,
+        // 64 宽时 5 个汉字的 UP 名会被截断，放宽到 72
+        width: isTop ? null : 72,
         height: isTop ? 76 : null,
         child: NotificationListener<ScrollEndNotification>(
           onNotification: (notification) {
@@ -73,6 +78,19 @@ class _DynamicsPageState extends CommonPageState<DynamicsPage>
           ),
         ),
       ),
+    );
+    if (isTop) {
+      return panel;
+    }
+    // 墨水屏：左侧 UP 栏原来是"白底 + 淡色文字"，和右边的时间线没有任何分界，
+    // 加一条 1dp 实心竖线把它隔开。
+    return Container(
+      decoration: BoxDecoration(
+        border: Border(
+          right: BorderSide(color: colorScheme.outline, width: 1.0),
+        ),
+      ),
+      child: panel,
     );
   }
 
@@ -176,12 +194,12 @@ class _DynamicsPageState extends CommonPageState<DynamicsPage>
             ?leading,
             Expanded(
               child: TabBar(
-                dividerHeight: 0,
+                dividerHeight: 1,
                 isScrollable: true,
                 tabAlignment: .start,
-                dividerColor: Colors.transparent,
-                labelColor: colorScheme.primary,
-                indicatorColor: colorScheme.primary,
+                dividerColor: colorScheme.outline,
+                labelColor: colorScheme.onSurface,
+                indicatorColor: colorScheme.onSurface,
                 controller: _dynamicsController.tabController,
                 unselectedLabelColor: colorScheme.onSurface,
                 labelStyle:

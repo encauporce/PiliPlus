@@ -58,7 +58,7 @@ class _UpPanelState extends State<UpPanel> {
                 textAlign: .center,
                 style: TextStyle(
                   fontSize: 13,
-                  color: theme.colorScheme.primary,
+                  color: theme.colorScheme.onSurface,
                 ),
                 TextSpan(
                   children: [
@@ -74,7 +74,7 @@ class _UpPanelState extends State<UpPanel> {
                               ? Icons.expand_less
                               : Icons.expand_more,
                           size: 12,
-                          color: theme.colorScheme.primary,
+                          color: theme.colorScheme.onSurface,
                         ),
                       ),
                     ] else
@@ -84,7 +84,7 @@ class _UpPanelState extends State<UpPanel> {
                           controller.showLiveUp
                               ? Icons.keyboard_arrow_right
                               : Icons.keyboard_arrow_left,
-                          color: theme.colorScheme.primary,
+                          color: theme.colorScheme.onSurface,
                           size: 14,
                         ),
                       ),
@@ -137,7 +137,7 @@ class _UpPanelState extends State<UpPanel> {
   Widget upItemBuild(ThemeData theme, UpItem item) {
     final currentMid = controller.currentMid;
     final isLive = item is LiveUserItem;
-    final isCurrent = isLive || currentMid == item.mid || currentMid == -1;
+    final selected = !isLive && currentMid == item.mid;
 
     final isAll = item.mid == -1;
     void toMemberPage() => Get.toNamed('/member?mid=${item.mid}');
@@ -145,16 +145,16 @@ class _UpPanelState extends State<UpPanel> {
     Widget avatar;
     if (isAll) {
       avatar = DecoratedBox(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           shape: .circle,
-          color: Color(0xFF5CB67B),
+          color: theme.colorScheme.onSurface,
         ),
         child: Image.asset(
           width: 38,
           height: 38,
           cacheWidth: 38.cacheSize(context),
           Assets.logo2,
-          color: Colors.white,
+          color: theme.colorScheme.surface,
         ),
       );
     } else {
@@ -194,7 +194,7 @@ class _UpPanelState extends State<UpPanel> {
               right: 4,
               child: Badge(
                 smallSize: 8,
-                backgroundColor: theme.colorScheme.primary,
+                backgroundColor: theme.colorScheme.onSurface,
               ),
             ),
           ],
@@ -217,32 +217,30 @@ class _UpPanelState extends State<UpPanel> {
         // onDoubleTap: isLive ? () => _onSelect(data) : null,
         onLongPress: !isAll ? toMemberPage : null,
         onSecondaryTap: !isAll && !PlatformUtils.isMobile ? toMemberPage : null,
-        child: Opacity(
-          opacity: isCurrent ? 1 : 0.6,
-          child: Column(
-            spacing: 4,
-            mainAxisSize: .min,
-            mainAxisAlignment: .center,
-            children: [
-              avatar,
-              Padding(
-                padding: const .symmetric(horizontal: 4),
-                child: Text(
-                  isTop ? '${item.uname}\n' : item.uname!,
-                  maxLines: 2,
-                  textAlign: .center,
-                  overflow: .ellipsis,
-                  style: TextStyle(
-                    color: currentMid == item.mid
-                        ? theme.colorScheme.primary
-                        : theme.colorScheme.outline,
-                    height: 1.1,
-                    fontSize: 12.5,
-                  ),
+        child: Column(
+          spacing: 4,
+          mainAxisSize: .min,
+          mainAxisAlignment: .center,
+          children: [
+            avatar,
+            Padding(
+              padding: const .symmetric(horizontal: 4),
+              child: Text(
+                item.uname ?? '',
+                maxLines: isTop ? 2 : 1,
+                textAlign: .center,
+                overflow: .ellipsis,
+                style: TextStyle(
+                  // 墨水屏：原来用 0.6 透明度和主题绿区分选中态，
+                  // 在黑白屏上都糊成浅灰，改为纯黑 + 加粗。
+                  color: theme.colorScheme.onSurface,
+                  fontWeight: selected ? FontWeight.w600 : FontWeight.normal,
+                  height: 1.1,
+                  fontSize: 12.5,
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

@@ -73,48 +73,59 @@ Widget videoSeasonWidget(
                 left: 0,
                 right: 0,
                 bottom: 0,
-                child: Container(
-                  height: 70,
-                  alignment: Alignment.bottomLeft,
-                  padding: const EdgeInsets.fromLTRB(10, 0, 8, 8),
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Colors.transparent,
-                        Colors.black54,
-                      ],
-                    ),
-                    borderRadius: .vertical(bottom: Style.imgRadius),
-                  ),
-                  child: DefaultTextStyle.merge(
-                    style: TextStyle(
-                      fontSize: theme.textTheme.labelMedium!.fontSize,
-                      color: Colors.white,
-                    ),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        if (video.durationText case final durationText?) ...[
-                          DecoratedBox(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      // 墨水屏：原来用「黑→透明」渐变托白字，渐变在黑白屏上会抖成一片噪点，
+                      // 白字遇到亮封面还会糊掉。改成实心黑胶囊 + 白字，边缘干净。
+                      Expanded(
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 6,
+                              vertical: 3,
+                            ),
                             decoration: const BoxDecoration(
-                              color: Colors.black45,
+                              color: Colors.black,
                               borderRadius: .all(.circular(4)),
                             ),
-                            child: Text(' $durationText '),
+                            child: DefaultTextStyle.merge(
+                              style: TextStyle(
+                                fontSize: theme.textTheme.labelMedium!.fontSize,
+                                color: Colors.white,
+                              ),
+                              child: Row(
+                                mainAxisSize: .min,
+                                children: [
+                                  if (video.durationText
+                                      case final durationText?) ...[
+                                    Text(durationText),
+                                    const SizedBox(width: 6),
+                                  ],
+                                  if (video.stat case final stat?) ...[
+                                    Text('${NumUtils.numFormat(stat.play)}播放'),
+                                    const SizedBox(width: 6),
+                                    Text('${NumUtils.numFormat(stat.danmu)}弹幕'),
+                                  ],
+                                ],
+                              ),
+                            ),
                           ),
-                          const SizedBox(width: 6),
-                        ],
-                        if (video.stat case final stat?) ...[
-                          Text('${NumUtils.numFormat(stat.play)}播放'),
-                          const SizedBox(width: 6),
-                          Text('${NumUtils.numFormat(stat.danmu)}弹幕'),
-                        ],
-                        const Spacer(),
-                        const PlayIcon(size: 50),
-                      ],
-                    ),
+                        ),
+                      ),
+                      // 白色播放图标压在亮封面上会看不见，垫一块黑底。
+                      Container(
+                        decoration: const BoxDecoration(
+                          color: Colors.black,
+                          borderRadius: .all(.circular(6)),
+                        ),
+                        padding: const EdgeInsets.all(2),
+                        child: const PlayIcon(size: 30),
+                      ),
+                    ],
                   ),
                 ),
               ),

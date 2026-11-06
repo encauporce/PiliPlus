@@ -19,9 +19,6 @@ Widget? addWidget(
   required DynamicAddModel additional,
 }) {
   final type = additional.type;
-  late final Color bgColor = floor == 1
-      ? theme.dividerColor.withValues(alpha: 0.08)
-      : theme.colorScheme.surface;
   late final borderRadius = floor == 1 ? null : Style.mdRadius;
   Widget? child;
   try {
@@ -681,9 +678,15 @@ Widget? addWidget(
     if (child != null) {
       return Padding(
         padding: const EdgeInsets.only(top: 6),
+        // 墨水屏：原来用 8% 灰底区分附加卡片，黑白屏上糊成一块脏灰，
+        // 改成白底 + 1dp 黑框。
         child: Material(
-          borderRadius: borderRadius,
-          color: bgColor,
+          color: theme.colorScheme.surface,
+          shape: RoundedRectangleBorder(
+            borderRadius: const BorderRadius.all(Radius.circular(8)),
+            side: BorderSide(color: theme.colorScheme.outline, width: 1.0),
+          ),
+          clipBehavior: Clip.antiAlias,
           child: child,
         ),
       );

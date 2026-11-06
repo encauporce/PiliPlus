@@ -29,7 +29,8 @@ Widget dynInteraction({
         border: Border(
           left: BorderSide(
             width: 1.5,
-            color: theme.colorScheme.outline.withValues(alpha: 0.3),
+            // 墨水屏：30% 透明的指示线在黑白屏上基本看不见
+            color: theme.colorScheme.outline,
           ),
         ),
       ),

@@ -410,7 +410,7 @@ class ReplyItemGrpc extends StatelessWidget {
     late bool isProcessing = false;
     final color = replyControl.showTranslation
         ? colorScheme.primary
-        : colorScheme.outline.withValues(alpha: 0.8);
+        : colorScheme.outline;
     return SizedBox(
       height: 32,
       child: TextButton(
@@ -521,7 +521,7 @@ class ReplyItemGrpc extends StatelessWidget {
                 Icon(
                   Icons.reply,
                   size: 18,
-                  color: colorScheme.outline.withValues(alpha: 0.8),
+                  color: colorScheme.outline,
                 ),
                 Text('回复', style: textStyle),
               ],
@@ -567,8 +567,13 @@ class ReplyItemGrpc extends StatelessWidget {
       padding: const .only(left: 42, right: 4),
       child: Material(
         animationDuration: .zero,
-        color: colorScheme.onInverseSurface,
-        borderRadius: const .all(.circular(6)),
+        // 墨水屏：原来的 onInverseSurface 灰底会显示成一块糊灰，
+        // 改为白底 + 1px 黑框，靠边框区分层级。
+        color: colorScheme.surface,
+        shape: RoundedRectangleBorder(
+          borderRadius: const .all(.circular(6)),
+          side: BorderSide(color: colorScheme.outline, width: 1.0),
+        ),
         child: Column(
           crossAxisAlignment: .stretch,
           children: [
@@ -618,7 +623,7 @@ class ReplyItemGrpc extends StatelessWidget {
                       style: TextStyle(
                         height: 1.6,
                         fontSize: 14,
-                        color: colorScheme.onSurface.withValues(alpha: 0.85),
+                        color: colorScheme.onSurface,
                       ),
                       overflow: TextOverflow.ellipsis,
                       maxLines: 2,
@@ -683,9 +688,7 @@ class ReplyItemGrpc extends StatelessWidget {
                           TextSpan(
                             text: 'UP主等人 ',
                             style: TextStyle(
-                              color: colorScheme.onSurface.withValues(
-                                alpha: 0.85,
-                              ),
+                              color: colorScheme.onSurface,
                             ),
                           ),
                         TextSpan(

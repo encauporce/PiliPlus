@@ -109,14 +109,15 @@ Widget module(
       final common = major?.common ?? major?.upowerCommon;
       if (common == null) return const SizedBox.shrink();
       return Material(
-        color: floor == 1
-            ? theme.dividerColor.withValues(alpha: 0.08)
-            : theme.colorScheme.surface,
-        shape: floor == 1
-            ? null
-            : const RoundedRectangleBorder(borderRadius: Style.mdRadius),
+        // 墨水屏：8% 灰底在黑白屏上是脏灰，统一改白底 + 1dp 黑框
+        color: theme.colorScheme.surface,
+        shape: RoundedRectangleBorder(
+          borderRadius: Style.mdRadius,
+          side: BorderSide(color: theme.colorScheme.outline, width: 1.0),
+        ),
+        clipBehavior: Clip.antiAlias,
         child: InkWell(
-          borderRadius: floor == 1 ? null : Style.mdRadius,
+          borderRadius: Style.mdRadius,
           onTap: () {
             try {
               String url = common.jumpUrl!;
@@ -179,15 +180,15 @@ Widget module(
       );
     case 'DYNAMIC_TYPE_MUSIC':
       final music = major!.music!;
-      final borderRadius = floor == 1 ? null : Style.mdRadius;
-      final Color bgColor = floor == 1
-          ? theme.dividerColor.withValues(alpha: 0.08)
-          : theme.colorScheme.surface;
       return Material(
-        color: bgColor,
-        borderRadius: borderRadius,
+        color: theme.colorScheme.surface,
+        shape: RoundedRectangleBorder(
+          borderRadius: Style.mdRadius,
+          side: BorderSide(color: theme.colorScheme.outline, width: 1.0),
+        ),
+        clipBehavior: Clip.antiAlias,
         child: InkWell(
-          borderRadius: borderRadius,
+          borderRadius: Style.mdRadius,
           onTap: () => AudioPage.toAudioPage(
             oid: music.id!,
             itemType: 3,

@@ -49,7 +49,13 @@ Widget forwardPanel(
 
   child = Container(
     padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
-    color: theme.dividerColor.withValues(alpha: 0.08),
+    // 墨水屏：原来用 8% 灰底当"引用块"，黑白屏上是一块脏灰，
+    // 改成白底 + 1dp 黑框 + 8dp 圆角。
+    decoration: BoxDecoration(
+      color: theme.colorScheme.surface,
+      borderRadius: const BorderRadius.all(Radius.circular(8)),
+      border: Border.all(color: theme.colorScheme.outline, width: 1.0),
+    ),
     child: child,
   );
 

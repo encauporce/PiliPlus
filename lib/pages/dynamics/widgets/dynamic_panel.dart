@@ -111,7 +111,7 @@ class DynamicPanel extends StatelessWidget {
               if (item.modules.moduleFold case final moduleFold?) ...[
                 Divider(
                   height: 1,
-                  color: theme.dividerColor.withValues(alpha: 0.1),
+                  color: theme.colorScheme.outline,
                 ),
                 _buildFoldItem(theme, moduleFold),
               ],
@@ -124,19 +124,19 @@ class DynamicPanel extends StatelessWidget {
     if (isSave || (isDetail && !isDetailPortraitW)) {
       return child;
     }
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            width: 8,
-            color: theme.dividerColor.withValues(alpha: 0.05),
-          ),
+    // 墨水屏：原来是 8dp 的 5% 透明灰横带当分隔，黑白屏上糊成一条脏灰条，
+    // 改成 8dp 空白 + 1dp 实心黑线。
+    return Column(
+      mainAxisSize: .min,
+      children: [
+        child,
+        const SizedBox(height: 8),
+        Divider(
+          height: 1,
+          thickness: 1,
+          color: theme.colorScheme.outline,
         ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 8),
-        child: child,
-      ),
+      ],
     );
   }
 
