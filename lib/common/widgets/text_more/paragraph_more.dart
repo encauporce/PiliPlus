@@ -51,7 +51,12 @@ class RenderParagraphMore extends RenderParagraph {
   TapGestureRecognizer? _tapGestureRecognizer;
 
   TextSpan _moreTextSpan([TextStyle? style]) => TextSpan(
-    style: (style ?? text.style!).copyWith(color: _primary),
+    // 墨水屏：展开入口原来是主题绿，转灰后和正文糊在一起，补下划线当可点标识
+    style: (style ?? text.style!).copyWith(
+      color: _primary,
+      decoration: TextDecoration.underline,
+      decorationColor: _primary,
+    ),
     text: '查看更多',
     recognizer: _tapGestureRecognizer,
   );

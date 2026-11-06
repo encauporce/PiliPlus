@@ -38,10 +38,8 @@ class _DynamicsPageState extends CommonPageState<DynamicsPage>
           tooltip: '发布动态',
           style: ButtonStyle(
             padding: const WidgetStatePropertyAll(EdgeInsets.zero),
-            backgroundColor: WidgetStatePropertyAll(
-              colorScheme.secondaryContainer,
-            ),
-            // 墨水屏：浅绿底在黑白屏上是一块灰，补 1dp 黑边
+            // 墨水屏：浅绿底在黑白屏上是一块灰，统一成白底黑框
+            backgroundColor: WidgetStatePropertyAll(colorScheme.surface),
             side: WidgetStatePropertyAll(
               BorderSide(color: colorScheme.outline, width: 1.0),
             ),
@@ -50,7 +48,7 @@ class _DynamicsPageState extends CommonPageState<DynamicsPage>
           icon: Icon(
             Icons.add,
             size: 18,
-            color: colorScheme.onSecondaryContainer,
+            color: colorScheme.onSurface,
           ),
         ),
       );
@@ -198,13 +196,12 @@ class _DynamicsPageState extends CommonPageState<DynamicsPage>
                 isScrollable: true,
                 tabAlignment: .start,
                 dividerColor: colorScheme.outline,
-                labelColor: colorScheme.onSurface,
+                // 选中/未选中不能都用纯黑，否则只能靠粗细区分；颜色交给主题
                 indicatorColor: colorScheme.onSurface,
                 controller: _dynamicsController.tabController,
-                unselectedLabelColor: colorScheme.onSurface,
-                labelStyle:
-                    TabBarTheme.of(context).labelStyle
-                        ?.copyWith(fontSize: 13) ??
+                labelStyle: TabBarTheme.of(context).labelStyle?.copyWith(
+                      fontSize: 13,
+                    ) ??
                     const TextStyle(fontSize: 13),
                 tabs: DynamicsTabType.values
                     .map((e) => Tab(text: e.label))
