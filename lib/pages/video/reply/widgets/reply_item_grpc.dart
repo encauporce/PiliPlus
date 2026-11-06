@@ -183,9 +183,9 @@ class ReplyItemGrpc extends StatelessWidget {
                         maxLines: 1,
                         overflow: .ellipsis,
                         style: TextStyle(
-                          color: (member.vipStatus > 0 && member.vipType == 2)
-                              ? colorScheme.vipColor
-                              : colorScheme.outline,
+                          // 墨水屏：大会员粉色名字在黑白屏上淡成浅灰，统一用黑色，
+                          // 会员身份由 LV/卡片挂件体现
+                          color: colorScheme.outline,
                           fontSize: 13,
                         ),
                       ),

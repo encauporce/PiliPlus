@@ -111,12 +111,8 @@ class AuthorPanel extends StatelessWidget {
               maxLines: 1,
               overflow: .ellipsis,
               style: TextStyle(
-                color:
-                    moduleAuthor.vip != null &&
-                        moduleAuthor.vip!.status > 0 &&
-                        moduleAuthor.vip!.type == 2
-                    ? theme.colorScheme.vipColor
-                    : theme.colorScheme.onSurface,
+                // 墨水屏：粉色大会员昵称在黑白屏上几乎看不见，统一黑色
+                color: theme.colorScheme.onSurface,
                 fontSize: theme.textTheme.titleSmall!.fontSize,
               ),
             ),
