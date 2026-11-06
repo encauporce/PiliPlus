@@ -150,24 +150,6 @@ class _MainAppState extends PopScopeState<MainApp>
     }
   }
 
-  Widget? get _bottomNav {
-    final nav = _buildBottomNav();
-    if (nav == null) return null;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    return Container(
-      // 用 foregroundDecoration：普通 decoration 的描边会被不透明的导航栏底色盖住
-      foregroundDecoration: BoxDecoration(
-        border: Border(
-          top: BorderSide(
-            color: isDark ? Colors.white : Colors.black,
-            width: 1.0,
-          ),
-        ),
-      ),
-      child: nav,
-    );
-  }
-
   Widget? _buildBottomNav() {
     Widget? bottomNav;
     if (_mainController.navigationBars.length > 1) {
@@ -225,6 +207,24 @@ class _MainAppState extends PopScopeState<MainApp>
           ),
         );
       }
+
+      // 必须在 hideBottomBar 的平移之前套上边框：
+      // FractionalTranslation / AnimatedSlide 只改绘制偏移、不改布局位置，
+      // 若把边框包在外层，底栏收起后线会孤零零留在屏幕上。
+      bottomNav = Container(
+        // foregroundDecoration：普通 decoration 的描边会被不透明的导航栏底色盖住
+        foregroundDecoration: BoxDecoration(
+          border: Border(
+            top: BorderSide(
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.white
+                  : Colors.black,
+              width: 1.0,
+            ),
+          ),
+        ),
+        child: bottomNav,
+      );
 
       if (_mainController.hideBottomBar) {
         if (_mainController.barOffset case final barOffset?) {
@@ -356,7 +356,7 @@ class _MainAppState extends PopScopeState<MainApp>
     Widget? bottomNav;
     final EdgeInsets padding;
     if (_mainController.useBottomNav) {
-      bottomNav = _bottomNav;
+      bottomNav = _buildBottomNav();
       if (bottomNav != null) {
         bottomNav = MediaQuery.removePadding(
           context: context,
