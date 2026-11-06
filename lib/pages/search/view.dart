@@ -88,7 +88,7 @@ class _SearchPageState extends State<SearchPage> {
   PreferredSizeWidget get _buildAppBar => AppBar(
     shape: Border(
       bottom: BorderSide(
-        color: theme.dividerColor.withValues(alpha: 0.08),
+        color: theme.dividerColor,
         width: 1,
       ),
     ),

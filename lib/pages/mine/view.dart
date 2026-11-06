@@ -550,7 +550,7 @@ class _MediaPageState extends CommonPageState<MinePage>
       children: [
         Divider(
           height: 20,
-          color: theme.colorScheme.outline.withValues(alpha: 0.1),
+          color: theme.colorScheme.outline,
         ),
         ListTile(
           dense: true,

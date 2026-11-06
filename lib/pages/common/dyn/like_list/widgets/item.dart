@@ -91,8 +91,8 @@ class DynLikeItem extends StatelessWidget {
             Divider(
               indent: 60,
               endIndent: 15,
-              height: 0.3,
-              color: colorScheme.outline.withValues(alpha: 0.08),
+              height: 1.0,
+              color: colorScheme.outline,
             ),
           ],
         ),

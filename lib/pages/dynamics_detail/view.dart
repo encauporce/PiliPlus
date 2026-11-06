@@ -545,7 +545,7 @@ class _DynamicDetailPageState extends CommonDynPageMultiState<DynamicDetailPage>
               color: theme.colorScheme.surface,
               border: Border(
                 top: BorderSide(
-                  color: theme.colorScheme.outline.withValues(alpha: 0.08),
+                  color: theme.colorScheme.outline,
                 ),
               ),
             ),
