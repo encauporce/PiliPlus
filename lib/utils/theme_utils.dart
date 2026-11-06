@@ -319,6 +319,15 @@ abstract final class ThemeUtils {
           ),
         ),
       ),
+      // FilledButton.tonal 默认用 secondaryContainer（主题绿），转灰后是一块
+      // 深浅不一的灰绿底，和「白底黑框」体系冲突。统一成白底黑框。
+      filledButtonTheme: FilledButtonThemeData(
+        style: ButtonStyle(
+          backgroundColor: WidgetStatePropertyAll(colorScheme.surface),
+          foregroundColor: WidgetStatePropertyAll(colorScheme.onSurface),
+          side: WidgetStatePropertyAll(borderSide),
+        ),
+      ),
       segmentedButtonTheme: SegmentedButtonThemeData(
         style: ButtonStyle(
           side: WidgetStatePropertyAll(borderSide),
