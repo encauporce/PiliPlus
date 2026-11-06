@@ -82,8 +82,10 @@ class _DynamicsPageState extends CommonPageState<DynamicsPage>
     }
     // 墨水屏：左侧 UP 栏原来是"白底 + 淡色文字"，和右边的时间线没有任何分界，
     // 加一条 1dp 实心竖线把它隔开。
+    // 必须用 foregroundDecoration：普通 decoration 的描边画在 child 之下，
+    // 会被不透明的 Material 底色整块盖掉。
     return Container(
-      decoration: BoxDecoration(
+      foregroundDecoration: BoxDecoration(
         border: Border(
           right: BorderSide(color: colorScheme.outline, width: 1.0),
         ),

@@ -10,17 +10,17 @@ extension ThemeDataExt on ThemeData {
 }
 
 extension ColorSchemeExt on ColorScheme {
-  Color get vipColor =>
-      brightness.isLight ? BiliColors.pinkLight : BiliColors.pinkDark;
+  // 墨水屏：大会员/会员昵称原本是粉色（#FB7299），在黑白屏上淡成浅灰，
+  // 反而比普通用户的名字更弱。统一收敛到正文色，会员身份交给 LV 徽章表达。
+  Color get vipColor => onSurface;
 
   Color get blue =>
       brightness.isLight ? BiliColors.blueLight : BiliColors.blueDark;
 
-  Color get btnColor =>
-      brightness.isLight ? BiliColors.pinkLight : const Color(0xFF8F0030);
+  // 按钮/强调色同理，粉色在黑白屏上是脏灰块
+  Color get btnColor => onSurface;
 
-  Color get freeColor =>
-      brightness.isLight ? const Color(0xFFFF7F24) : const Color(0xFFD66011);
+  Color get freeColor => onSurface;
 
   bool get isLight => brightness.isLight;
 

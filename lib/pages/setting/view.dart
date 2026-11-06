@@ -307,7 +307,8 @@ class _SettingPageState extends State<SettingPage> {
       bottom: 8,
     ),
     child: Material(
-      color: theme.colorScheme.onInverseSurface,
+      // 有黑边了就不需要灰底，白底黑框在墨水屏上更干净
+      color: theme.colorScheme.surface,
       shape: RoundedRectangleBorder(
         borderRadius: const BorderRadius.all(Radius.circular(50)),
         side: BorderSide(
