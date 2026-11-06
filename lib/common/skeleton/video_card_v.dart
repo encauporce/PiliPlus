@@ -20,7 +20,7 @@ class VideoCardVSkeleton extends StatelessWidget {
         // 标题
         Expanded(
           child: Padding(
-            padding: const .fromLTRB(7, 6, 7, 3),
+            padding: const .fromLTRB(8, 6, 8, 4),
             child: Column(
               crossAxisAlignment: .stretch,
               children: [
@@ -39,7 +39,7 @@ class VideoCardVSkeleton extends StatelessWidget {
         ),
         // 封面
         Padding(
-          padding: const .symmetric(horizontal: 6, vertical: 2),
+          padding: const .symmetric(horizontal: 8, vertical: 2),
           child: AspectRatio(
             aspectRatio: Style.aspectRatio,
             child: DecoratedBox(
@@ -52,7 +52,7 @@ class VideoCardVSkeleton extends StatelessWidget {
         ),
         // 时长 / 播放 / 弹幕 + UP 名
         Padding(
-          padding: const .fromLTRB(7, 5, 7, 6),
+          padding: const .fromLTRB(8, 4, 8, 6),
           child: Column(
             crossAxisAlignment: .start,
             children: [

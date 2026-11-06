@@ -136,7 +136,7 @@ class VideoCardV extends StatelessWidget {
   Widget title(BuildContext context) {
     final theme = Theme.of(context);
     return Padding(
-      padding: const .fromLTRB(7, 5, 7, 3),
+      padding: const .fromLTRB(8, 6, 8, 4),
       child: ClipRect(
         child: Align(
           alignment: Alignment.topLeft,
@@ -159,7 +159,7 @@ class VideoCardV extends StatelessWidget {
   /// 封面：夹在标题与底部信息之间，圆角与卡片保持一致
   Widget cover() {
     return Padding(
-      padding: const .symmetric(horizontal: 6, vertical: 2),
+      padding: const .symmetric(horizontal: 8, vertical: 2),
       child: AspectRatio(
         aspectRatio: Style.aspectRatio,
         child: LayoutBuilder(
@@ -179,7 +179,7 @@ class VideoCardV extends StatelessWidget {
     final theme = Theme.of(context);
     final color = theme.colorScheme.outline;
     return Padding(
-      padding: const .fromLTRB(7, 3, 7, 5),
+      padding: const .fromLTRB(8, 4, 8, 6),
       child: Column(
         mainAxisSize: .min,
         crossAxisAlignment: .start,

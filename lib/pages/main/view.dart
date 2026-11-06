@@ -236,7 +236,8 @@ class _MainAppState extends PopScopeState<MainApp>
     if (bottomNav != null) {
       final isDark = Theme.of(context).brightness == Brightness.dark;
       bottomNav = Container(
-        decoration: BoxDecoration(
+        // 用 foregroundDecoration：普通 decoration 的描边会被不透明的导航栏底色盖住
+        foregroundDecoration: BoxDecoration(
           border: Border(
             top: BorderSide(
               color: isDark ? Colors.white : Colors.black,
