@@ -83,6 +83,42 @@ abstract final class ThemeUtils {
         // 种子色的 onSurfaceVariant 是带绿的深灰，直接用它当正文/次要文字
         // 在墨水屏上会显得发闷，压成中性深灰保留层级但去掉绿调。
         onSurfaceVariant: const Color(0xFF333333),
+        // 种子色的 primary 是全站绿色（昵称、链接、"查看更多"、"立即播放"、
+        // 评论区嵌套回复里的 @ 名等都用它），逐个组件改不现实且容易漏。
+        // 这里直接把主色族压成黑白，链接靠"黑色 + 下划线"、选中态靠"加粗 + 黑框"
+        // 表达，一次性消掉大部分残留彩色。
+        primary: Colors.black,
+        onPrimary: Colors.white,
+        primaryContainer: Colors.white,
+        onPrimaryContainer: Colors.black,
+        inversePrimary: Colors.black,
+        secondary: Colors.black,
+        onSecondary: Colors.white,
+        // NavigationBar / NavigationDrawer 的选中胶囊底用的是它，
+        // 压成白色后配合 indicatorShape 的黑描边正好是"白底黑框"。
+        secondaryContainer: Colors.white,
+        onSecondaryContainer: Colors.black,
+        tertiary: Colors.black,
+        onTertiary: Colors.white,
+        tertiaryContainer: Colors.white,
+        onTertiaryContainer: Colors.black,
+      );
+    } else {
+      // 深色模式同样去掉绿调，只保留灰度层级。
+      colorScheme = colorScheme.copyWith(
+        primary: Colors.white,
+        onPrimary: Colors.black,
+        primaryContainer: const Color(0xFF1F1F1F),
+        onPrimaryContainer: Colors.white,
+        inversePrimary: Colors.white,
+        secondary: Colors.white,
+        onSecondary: Colors.black,
+        secondaryContainer: const Color(0xFF1F1F1F),
+        onSecondaryContainer: Colors.white,
+        tertiary: Colors.white,
+        onTertiary: Colors.black,
+        tertiaryContainer: const Color(0xFF1F1F1F),
+        onTertiaryContainer: Colors.white,
       );
     }
 
@@ -132,6 +168,12 @@ abstract final class ThemeUtils {
         dividerHeight: 1.0,
         labelColor: isDark ? Colors.white : Colors.black,
         unselectedLabelColor: isDark ? Colors.white70 : Colors.black54,
+      ),
+      // 默认 Badge 底是 colorScheme.error（红色），墨水屏上是一块深灰噪点。
+      // 统一成"黑底白字"（深色模式反过来），未读角标靠形状而不是颜色区分。
+      badgeTheme: BadgeThemeData(
+        backgroundColor: isDark ? Colors.white : Colors.black,
+        textColor: isDark ? Colors.black : Colors.white,
       ),
       snackBarTheme: SnackBarThemeData(
         elevation: 0,
