@@ -16,7 +16,6 @@ import 'package:PiliPlus/pages/dynamics/controller.dart';
 import 'package:PiliPlus/pages/save_panel/view.dart';
 import 'package:PiliPlus/utils/accounts.dart';
 import 'package:PiliPlus/utils/bili_utils.dart';
-import 'package:PiliPlus/utils/color_utils.dart';
 import 'package:PiliPlus/utils/date_utils.dart';
 import 'package:PiliPlus/utils/extension/context_ext.dart';
 import 'package:PiliPlus/utils/extension/num_ext.dart';
@@ -207,9 +206,9 @@ class AuthorPanel extends StatelessWidget {
                     height: 1,
                     fontSize: 11,
                     fontFamily: Assets.digitalNum,
-                    color: ColourUtils.parseColor(
-                      moduleAuthor.decorate!.fan!.color!,
-                    ),
+                    // 墨水屏：粉丝牌编号原来用接口下发的粉丝牌主色（土黄/粉），
+                    // 转灰后是一块中灰，和黑色昵称明度接近反而更糊，统一压成正文色。
+                    color: theme.colorScheme.onSurface,
                   ),
                 ),
               ),

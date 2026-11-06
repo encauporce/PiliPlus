@@ -46,7 +46,9 @@ void showReplyCopyDialog(
                             TextSpan(
                               text: text,
                               style: const TextStyle(
-                                color: Colors.green,
+                                // 墨水屏：原来用绿色标出新增的过滤词，转灰后和正文几乎同色，
+                                // 改成加粗 + 下划线表达强调
+                                decoration: TextDecoration.underline,
                                 fontWeight: .bold,
                               ),
                             ),
