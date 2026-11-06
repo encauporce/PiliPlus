@@ -47,7 +47,10 @@ class NetworkImgLayer extends StatelessWidget {
     if (src?.isNotEmpty == true) {
       Widget child = _buildImage(context, isEmote: isEmote, isAvatar: isAvatar);
       final isDark = Theme.of(context).brightness == Brightness.dark;
-      final borderColor = isDark ? const Color(0xFF666666) : const Color(0xFFCCCCCC);
+      // 墨水屏：浅色下用纯黑描边，原来的 #CCCCCC 在白底上基本看不见
+      final borderColor = isDark
+          ? const Color(0xFF666666)
+          : Colors.black;
       if (isEmote) {
         return child;
       } else if (isAvatar) {

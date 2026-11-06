@@ -93,7 +93,8 @@ abstract final class Pref {
 
   static int get _themeTypeInt => _setting.get(
     SettingBoxKey.themeMode,
-    defaultValue: ThemeType.system.index,
+    // 墨水屏默认浅色（白底黑框），用户仍可在「外观设置 → 主题模式」改为跟随系统/深色
+    defaultValue: ThemeType.light.index,
   );
 
   static ThemeType get themeType => ThemeType.values[_themeTypeInt];

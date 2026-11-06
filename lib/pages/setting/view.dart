@@ -308,7 +308,14 @@ class _SettingPageState extends State<SettingPage> {
     ),
     child: Material(
       color: theme.colorScheme.onInverseSurface,
-      borderRadius: const BorderRadius.all(Radius.circular(50)),
+      shape: RoundedRectangleBorder(
+        borderRadius: const BorderRadius.all(Radius.circular(50)),
+        side: BorderSide(
+          color: theme.brightness == Brightness.dark
+              ? Colors.white
+              : Colors.black,
+        ),
+      ),
       child: InkWell(
         onTap: () => Get.toNamed('/settingsSearch'),
         borderRadius: const BorderRadius.all(Radius.circular(50)),

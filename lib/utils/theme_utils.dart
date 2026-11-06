@@ -62,9 +62,32 @@ abstract final class ThemeUtils {
       width: 1.0,
     );
 
+    // 墨水屏：浅色模式一律纯白底 + 纯黑线。
+    // 原 seed 配色带一层淡绿底（#FBFDF8），在墨水屏上会显示成脏灰色，这里全部压成纯白。
+    if (!isDark) {
+      colorScheme = colorScheme.copyWith(
+        surface: Colors.white,
+        onSurface: Colors.black,
+        surfaceContainerLowest: Colors.white,
+        surfaceContainerLow: Colors.white,
+        surfaceContainer: Colors.white,
+        surfaceContainerHigh: Colors.white,
+        surfaceContainerHighest: Colors.white,
+        // 全库有 50 多处把 onInverseSurface 当"次级面板底色"用，
+        // 压成纯白会让这些面板在白底上直接消失，所以留一层极浅中性灰（去绿调），
+        // 真正靠黑边框划分区域。
+        onInverseSurface: const Color(0xFFF0F0F0),
+        inverseSurface: Colors.black,
+        outline: Colors.black,
+        outlineVariant: const Color(0xFF000000),
+      );
+    }
+
     final theme = ThemeData(
       useMaterial3: true,
       colorScheme: colorScheme,
+      scaffoldBackgroundColor: isDark ? Colors.black : Colors.white,
+      canvasColor: isDark ? Colors.black : Colors.white,
       fontFamily: fontFamily,
       textTheme: textTheme,
       appBarTheme: AppBarTheme(
@@ -98,7 +121,7 @@ abstract final class ThemeUtils {
       tabBarTheme: TabBarThemeData(
         indicatorColor: isDark ? Colors.white : Colors.black,
         indicatorSize: TabBarIndicatorSize.label,
-        dividerColor: isDark ? Colors.white24 : Colors.black12,
+        dividerColor: isDark ? Colors.white24 : Colors.black,
         dividerHeight: 1.0,
         labelColor: isDark ? Colors.white : Colors.black,
         unselectedLabelColor: isDark ? Colors.white70 : Colors.black54,
@@ -239,7 +262,7 @@ abstract final class ThemeUtils {
         controlAffinity: .leading,
         shape: Border(
           bottom: BorderSide(
-            color: isDark ? const Color(0xFF444444) : const Color(0xFFDDDDDD),
+            color: isDark ? const Color(0xFF444444) : Colors.black,
             width: 1.0,
           ),
         ),
@@ -291,6 +314,18 @@ abstract final class ThemeUtils {
       segmentedButtonTheme: SegmentedButtonThemeData(
         style: ButtonStyle(
           side: WidgetStatePropertyAll(borderSide),
+        ),
+      ),
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+        elevation: 0,
+        focusElevation: 0,
+        hoverElevation: 0,
+        highlightElevation: 0,
+        backgroundColor: isDark ? Colors.black : Colors.white,
+        foregroundColor: isDark ? Colors.white : Colors.black,
+        shape: RoundedRectangleBorder(
+          borderRadius: const BorderRadius.all(Radius.circular(16)),
+          side: borderSide,
         ),
       ),
       searchBarTheme: SearchBarThemeData(

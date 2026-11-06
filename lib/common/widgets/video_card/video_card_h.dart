@@ -50,10 +50,11 @@ class VideoCardH extends StatelessWidget {
               decoration: BoxDecoration(
                 border: Border(
                   bottom: BorderSide(
+                    // 墨水屏：原来的 0.5pt #E0E0E0 在白底上等于没有，改成实心黑线
                     color: theme.brightness == Brightness.dark
                         ? const Color(0xFF333333)
-                        : const Color(0xFFE0E0E0),
-                    width: 0.5,
+                        : const Color(0xFF000000),
+                    width: theme.brightness == Brightness.dark ? 0.5 : 1.0,
                   ),
                 ),
               ),
