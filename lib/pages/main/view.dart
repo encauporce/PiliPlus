@@ -151,6 +151,24 @@ class _MainAppState extends PopScopeState<MainApp>
   }
 
   Widget? get _bottomNav {
+    final nav = _buildBottomNav();
+    if (nav == null) return null;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Container(
+      // 用 foregroundDecoration：普通 decoration 的描边会被不透明的导航栏底色盖住
+      foregroundDecoration: BoxDecoration(
+        border: Border(
+          top: BorderSide(
+            color: isDark ? Colors.white : Colors.black,
+            width: 1.0,
+          ),
+        ),
+      ),
+      child: nav,
+    );
+  }
+
+  Widget? _buildBottomNav() {
     Widget? bottomNav;
     if (_mainController.navigationBars.length > 1) {
       if (_mainController.floatingNavBar) {
@@ -231,22 +249,6 @@ class _MainAppState extends PopScopeState<MainApp>
           );
         }
       }
-    }
-
-    if (bottomNav != null) {
-      final isDark = Theme.of(context).brightness == Brightness.dark;
-      bottomNav = Container(
-        // 用 foregroundDecoration：普通 decoration 的描边会被不透明的导航栏底色盖住
-        foregroundDecoration: BoxDecoration(
-          border: Border(
-            top: BorderSide(
-              color: isDark ? Colors.white : Colors.black,
-              width: 1.0,
-            ),
-          ),
-        ),
-        child: bottomNav,
-      );
     }
 
     return bottomNav;
