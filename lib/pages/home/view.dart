@@ -52,8 +52,10 @@ class _HomePageState extends CommonPageState<HomePage>
             controller: _homeController.tabController,
             tabs: _homeController.tabs.map((e) => Tab(text: e.label)).toList(),
             isScrollable: true,
-            dividerColor: Colors.transparent,
-            dividerHeight: 0,
+            dividerColor: _colorScheme.brightness == Brightness.dark
+                ? Colors.white
+                : Colors.black,
+            dividerHeight: 1.0,
             splashBorderRadius: Style.mdRadius,
             tabAlignment: TabAlignment.center,
             onTap: (_) {
@@ -147,48 +149,49 @@ class _HomePageState extends CommonPageState<HomePage>
   Widget searchBar() {
     const borderRadius = BorderRadius.all(Radius.circular(25));
     final isDark = _colorScheme.brightness == Brightness.dark;
+    final borderColor = isDark ? Colors.white : Colors.black;
     return Expanded(
       child: SizedBox(
         height: 44,
-        child: Material(
-          borderRadius: borderRadius,
-          shape: RoundedRectangleBorder(
+        // 直接用 Container 描边：Material 同时给 borderRadius 与 shape 时边框不稳，墨水屏上看不出来
+        child: Container(
+          decoration: BoxDecoration(
             borderRadius: borderRadius,
-            side: BorderSide(
-              color: isDark ? Colors.white : Colors.black,
-              width: 1.0,
-            ),
+            border: Border.all(color: borderColor, width: 1.0),
+            color: _colorScheme.surface,
           ),
-          color: _colorScheme.surfaceContainerHighest,
-          child: InkWell(
-            borderRadius: borderRadius,
-            onTap: () => Get.toNamed(
-              '/search',
-              parameters: _homeController.enableSearchWord
-                  ? {'hintText': _homeController.defaultSearch.value}
-                  : null,
-            ),
-            child: Row(
-              children: [
-                const SizedBox(width: 14),
-                Icon(
-                  Icons.search_outlined,
-                  color: _colorScheme.onSecondaryContainer,
-                  semanticLabel: '搜索',
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Obx(
-                    () => Text(
-                      _homeController.defaultSearch.value,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(color: _colorScheme.onSurface),
+          child: Material(
+            type: .transparency,
+            child: InkWell(
+              borderRadius: borderRadius,
+              onTap: () => Get.toNamed(
+                '/search',
+                parameters: _homeController.enableSearchWord
+                    ? {'hintText': _homeController.defaultSearch.value}
+                    : null,
+              ),
+              child: Row(
+                children: [
+                  const SizedBox(width: 14),
+                  Icon(
+                    Icons.search_outlined,
+                    color: _colorScheme.onSecondaryContainer,
+                    semanticLabel: '搜索',
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Obx(
+                      () => Text(
+                        _homeController.defaultSearch.value,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(color: _colorScheme.onSurface),
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(width: 5),
-              ],
+                  const SizedBox(width: 5),
+                ],
+              ),
             ),
           ),
         ),

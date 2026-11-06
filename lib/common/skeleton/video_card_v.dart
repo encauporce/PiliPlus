@@ -9,57 +9,68 @@ class VideoCardVSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = ColorScheme.of(context).onInverseSurface;
+    final colorScheme = ColorScheme.of(context);
+    // 墨水屏浅色下用略深的灰块，否则骨架在白底上看不出来
+    final color = colorScheme.brightness == Brightness.dark
+        ? colorScheme.onInverseSurface
+        : const Color(0xFFDDDDDD);
     final child = Column(
-      crossAxisAlignment: .start,
+      crossAxisAlignment: .stretch,
       children: [
-        AspectRatio(
-          aspectRatio: Style.aspectRatio,
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              color: color,
-              borderRadius: const .vertical(top: Style.imgRadius),
-            ),
-          ),
-        ),
+        // 标题
         Expanded(
           child: Padding(
-            padding: const .fromLTRB(4, 5, 6, 6),
+            padding: const .fromLTRB(7, 6, 7, 3),
             child: Column(
-              crossAxisAlignment: .start,
-              mainAxisAlignment: .spaceBetween,
+              crossAxisAlignment: .stretch,
               children: [
-                Container(width: 200, height: 13, color: color),
-                Container(
-                  height: 13,
-                  width: 140,
-                  color: color,
-                  margin: const .only(top: 5),
-                ),
-                const Spacer(),
-                Row(
-                  spacing: 8,
-                  children: [
-                    Container(
-                      height: 11,
-                      color: color,
-                      width: 40,
-                    ),
-                    Container(
-                      height: 11,
-                      color: color,
-                      width: 40,
-                    ),
-                  ],
-                ),
-                Container(
-                  height: 11,
-                  width: 75,
-                  color: color,
-                  margin: const .only(top: 5),
+                Container(height: 12, color: color),
+                const SizedBox(height: 5),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: FractionallySizedBox(
+                    widthFactor: 0.6,
+                    child: Container(height: 12, color: color),
+                  ),
                 ),
               ],
             ),
+          ),
+        ),
+        // 封面
+        Padding(
+          padding: const .symmetric(horizontal: 6, vertical: 2),
+          child: AspectRatio(
+            aspectRatio: Style.aspectRatio,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: color,
+                borderRadius: const .all(.circular(8)),
+              ),
+            ),
+          ),
+        ),
+        // 时长 / 播放 / 弹幕 + UP 名
+        Padding(
+          padding: const .fromLTRB(7, 5, 7, 6),
+          child: Column(
+            crossAxisAlignment: .start,
+            children: [
+              Row(
+                spacing: 8,
+                children: [
+                  Expanded(child: Container(height: 11, color: color)),
+                  Expanded(child: Container(height: 11, color: color)),
+                  Expanded(child: Container(height: 11, color: color)),
+                ],
+              ),
+              Container(
+                height: 11,
+                width: 75,
+                color: color,
+                margin: const .only(top: 5),
+              ),
+            ],
           ),
         ),
       ],
