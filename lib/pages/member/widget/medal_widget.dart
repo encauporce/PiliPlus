@@ -42,11 +42,16 @@ class MedalWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = ColorScheme.of(context);
+    // 墨水屏：粉丝牌原来是「直播间主题色底 + 彩色名字」，
+    // 转灰后是一块深浅不一的脏灰，还和 LV 徽章抢视觉。统一成白底 + 1dp 黑框。
+    final fg = colorScheme.onSurface;
     return Container(
       padding: padding,
       decoration: BoxDecoration(
         borderRadius: Style.mdRadius,
-        color: backgroundColor,
+        color: colorScheme.surface,
+        border: Border.all(color: colorScheme.outline, width: 1),
       ),
       child: Text.rich(
         strutStyle: strutStyle,
@@ -57,7 +62,7 @@ class MedalWidget extends StatelessWidget {
               style: TextStyle(
                 height: 1,
                 fontSize: fontSize,
-                color: nameColor,
+                color: fg,
               ),
             ),
             TextSpan(
@@ -65,7 +70,7 @@ class MedalWidget extends StatelessWidget {
               style: TextStyle(
                 height: 1,
                 fontSize: fontSize,
-                color: nameColor,
+                color: fg,
                 fontWeight: .bold,
               ),
             ),

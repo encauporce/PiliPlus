@@ -1,6 +1,5 @@
 import 'package:PiliPlus/models/common/badge_type.dart';
 import 'package:PiliPlus/utils/extension/string_ext.dart';
-import 'package:PiliPlus/utils/extension/theme_ext.dart';
 import 'package:material_ui/material_ui.dart';
 
 class PBadge extends StatelessWidget {
@@ -48,40 +47,39 @@ class PBadge extends StatelessWidget {
     final Color color;
     final isDark = colorScheme.isDark;
     Color borderColor = isDark ? Colors.white : Colors.black;
+    // 墨水屏：主题种子色（绿）转灰后是中灰块 + 白字，一片雾。
+    // 全部收敛成「黑底白字 / 白底黑框」两态。
+    final Color solid = isDark ? Colors.white : Colors.black;
+    final Color onSolid = isDark ? Colors.black : Colors.white;
 
     switch (type) {
       case PBadgeType.primary:
-        bgColor = colorScheme.primary;
-        color = colorScheme.onPrimary;
+        bgColor = solid;
+        color = onSolid;
       case PBadgeType.secondary:
-        bgColor = colorScheme.secondaryContainer;
-        color = colorScheme.onSecondaryContainer;
+        bgColor = colorScheme.surface;
+        color = colorScheme.onSurface;
       case PBadgeType.gray:
         bgColor = Colors.black;
         color = Colors.white;
         borderColor = Colors.white;
       case PBadgeType.error:
-        if (isDark) {
-          bgColor = colorScheme.errorContainer;
-          color = colorScheme.onErrorContainer;
-        } else {
-          bgColor = colorScheme.error;
-          color = colorScheme.onError;
-        }
+        bgColor = solid;
+        color = onSolid;
       case PBadgeType.line_primary:
-        color = colorScheme.primary;
+        color = colorScheme.onSurface;
         bgColor = Colors.transparent;
-        borderColor = colorScheme.primary;
+        borderColor = colorScheme.outline;
       case PBadgeType.line_secondary:
-        color = colorScheme.secondary;
+        color = colorScheme.onSurface;
         bgColor = Colors.transparent;
-        borderColor = colorScheme.secondary;
+        borderColor = colorScheme.outline;
       case PBadgeType.free:
-        bgColor = colorScheme.freeColor;
-        color = Colors.white;
+        bgColor = solid;
+        color = onSolid;
       case PBadgeType.shop:
-        bgColor = colorScheme.secondaryContainer;
-        color = colorScheme.onSurfaceVariant;
+        bgColor = colorScheme.surface;
+        color = colorScheme.onSurface;
     }
 
     const defPaddingStyle = EdgeInsets.symmetric(vertical: 2, horizontal: 3);

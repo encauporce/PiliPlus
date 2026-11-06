@@ -29,7 +29,6 @@ import 'package:PiliPlus/pages/video/reply/widgets/zan_grpc.dart';
 import 'package:PiliPlus/utils/accounts.dart';
 import 'package:PiliPlus/utils/app_scheme.dart';
 import 'package:PiliPlus/utils/bili_utils.dart';
-import 'package:PiliPlus/utils/color_utils.dart';
 import 'package:PiliPlus/utils/danmaku_utils.dart';
 import 'package:PiliPlus/utils/date_utils.dart';
 import 'package:PiliPlus/utils/duration_utils.dart';
@@ -272,7 +271,8 @@ class ReplyItemGrpc extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 8,
                       fontFamily: Assets.digitalNum,
-                      color: ColourUtils.parseColor(garb.cardFanColor),
+                      // 墨水屏：挂件卡号原按粉丝牌主题色渲染，转灰后几乎看不见
+                      color: colorScheme.outline,
                     ),
                   ),
                 ),
@@ -298,11 +298,11 @@ class ReplyItemGrpc extends StatelessWidget {
           switch (voteOption.labelKind) {
             .RED => TextSpan(
               text: '红方  ',
-              style: TextStyle(color: colorScheme.vipColor),
+              style: TextStyle(color: colorScheme.onSurface),
             ),
             .BLUE => TextSpan(
               text: '蓝方  ',
-              style: TextStyle(color: colorScheme.blue),
+              style: TextStyle(color: colorScheme.onSurface),
             ),
             _ => TextSpan(
               text: '投票  ',

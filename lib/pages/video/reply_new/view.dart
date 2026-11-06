@@ -159,7 +159,7 @@ class _ReplyPageState extends CommonRichTextPubPageState<ReplyPage> {
       ),
       Divider(
         height: 1,
-        color: theme.dividerColor.withValues(alpha: 0.1),
+        color: theme.colorScheme.outline,
       ),
       Container(
         height: 52,

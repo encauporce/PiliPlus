@@ -80,6 +80,9 @@ abstract final class ThemeUtils {
         inverseSurface: Colors.black,
         outline: Colors.black,
         outlineVariant: const Color(0xFF000000),
+        // 种子色的 onSurfaceVariant 是带绿的深灰，直接用它当正文/次要文字
+        // 在墨水屏上会显得发闷，压成中性深灰保留层级但去掉绿调。
+        onSurfaceVariant: const Color(0xFF333333),
       );
     }
 
@@ -128,9 +131,10 @@ abstract final class ThemeUtils {
       ),
       snackBarTheme: SnackBarThemeData(
         elevation: 0,
-        actionTextColor: colorScheme.primary,
-        closeIconColor: colorScheme.secondary,
-        backgroundColor: colorScheme.secondaryContainer,
+        actionTextColor: colorScheme.onSurface,
+        closeIconColor: colorScheme.onSurface,
+        // 原来是浅绿底 + 深绿字，墨水屏上是一块脏灰
+        backgroundColor: colorScheme.surface,
         shape: RoundedRectangleBorder(
           borderRadius: const BorderRadius.all(Radius.circular(8)),
           side: borderSide,
@@ -138,7 +142,7 @@ abstract final class ThemeUtils {
         contentTextStyle: TextStyle(
           fontFamily: fontFamily,
           fontWeight: fontWeight,
-          color: colorScheme.onSecondaryContainer,
+          color: colorScheme.onSurface,
         ),
       ),
       popupMenuTheme: PopupMenuThemeData(

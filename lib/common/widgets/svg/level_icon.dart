@@ -1,5 +1,6 @@
 // dart format width=120
 import 'dart:ui';
+import 'dart:ui' as ui;
 
 import 'package:flutter/semantics.dart';
 import 'package:material_ui/material_ui.dart';
@@ -18,7 +19,11 @@ class UserLevel extends LeafRenderObjectWidget {
 
   @override
   RenderObject createRenderObject(BuildContext context) {
-    return RenderLevel(height, level, flash);
+    // 墨水屏：等级徽章原来是彩色胶囊（LV6 红、LV4 橙、LV0 浅灰），
+    // 转灰后浅色等级白字压在浅底上几乎看不见，且每种颜色灰阶都不同，
+    // 一排评论看下来一片噪点。统一改成黑底白字（深色模式反相）。
+    return RenderLevel(height, level, flash)
+      ..isDark = Theme.of(context).brightness == Brightness.dark;
   }
 
   @override
@@ -29,12 +34,20 @@ class UserLevel extends LeafRenderObjectWidget {
     renderObject
       ..height = height
       ..level = level
-      ..flash = flash;
+      ..flash = flash
+      ..isDark = Theme.of(context).brightness == Brightness.dark;
   }
 }
 
 class RenderLevel extends RenderBox {
   RenderLevel(this._height, this._level, this._flash);
+
+  bool _isDark = false;
+  set isDark(bool value) {
+    if (_isDark == value) return;
+    _isDark = value;
+    markNeedsPaint();
+  }
 
   double _height;
   set height(double value) {
@@ -75,14 +88,17 @@ class RenderLevel extends RenderBox {
 
   @override
   void paint(PaintingContext context, Offset offset) {
-    final paint = Paint()..color = lookupBackgroundColor(_level);
+    // 浅色主题：黑底白字；深色主题：白底黑字
+    final bg = _isDark ? Colors.white : Colors.black;
+    final fg = _isDark ? Colors.black : Colors.white;
+    final paint = Paint()..color = bg;
     LevelCanvas(context.canvas)
       ..save()
       ..translate(offset.dx, offset.dy)
       ..scale(size.height / LevelCanvas._totalB)
       ..drawLevelBack(paint, bolt: _flash)
-      ..drawLevelLv()
-      ..drawLEDigit(_level, paint..color = Colors.white)
+      ..drawLevelLv(fg)
+      ..drawLEDigit(_level, paint..color = fg)
       ..restore();
   }
 
@@ -94,6 +110,7 @@ class RenderLevel extends RenderBox {
       ..label = '${_flash ? "硬核" : ""}$_level级';
   }
 
+  // 墨水屏版不再按等级换色，保留等级信息由数字体现。
   static Color lookupBackgroundColor(int level) {
     return switch (level) {
       0 || 1 => const Color(0xFFC0C0C0),
@@ -129,18 +146,27 @@ extension type LevelCanvas(Canvas _) implements Canvas {
   // 竖段拼接用的中心线
   static const double _midMid = (_midY + _midYB) / 2; // 235
 
-  static final _boltIcon =
-      (ParagraphBuilder(
-          ParagraphStyle(
-            fontSize: 460,
-            fontFamily: Icons.bolt_rounded.fontFamily,
-            height: 1,
-            fontWeight: FontWeight.w900,
-            textDirection: TextDirection.ltr,
-          ),
-        )..addText(.fromCharCode(Icons.bolt_rounded.codePoint))).build()
+  // 硬核会员的闪电标记：原来默认黑色，在彩色胶囊上能看清；
+  // 改成黑底后必须跟着前景色走，否则直接消失。
+  static final _boltIcons = <bool, Paragraph>{};
+
+  static Paragraph _boltIconOf(bool isDark) {
+    return _boltIcons.putIfAbsent(isDark, () {
+      final builder = ParagraphBuilder(
+        ParagraphStyle(
+          fontSize: 460,
+          fontFamily: Icons.bolt_rounded.fontFamily,
+          height: 1,
+          fontWeight: FontWeight.w900,
+          textDirection: TextDirection.ltr,
+        ),
+      )..pushStyle(ui.TextStyle(color: isDark ? Colors.black : Colors.white));
+      return (builder..addText(.fromCharCode(Icons.bolt_rounded.codePoint))).build()
         ..layout(const ParagraphConstraints(width: double.infinity));
-  void drawBolt() => drawParagraph(_boltIcon, const Offset(840, 5));
+    });
+  }
+
+  void drawBolt(bool isDark) => drawParagraph(_boltIconOf(isDark), const Offset(840, 5));
 
   void _draw1(Paint paint) {
     drawRRect(const .fromLTRBXY(673, _botY, 833, _botYB, 20, 20), paint);
@@ -235,43 +261,47 @@ extension type LevelCanvas(Canvas _) implements Canvas {
     }
   }
 
-  static final _lvPicture = () {
-    final recorder = PictureRecorder();
-    final paint = Paint()..color = Colors.white;
-    final canvas = Canvas(recorder);
+  static final _lvPictures = <bool, Picture>{};
 
-    const double vLeft = 296;
-    const double lvTop = 106;
-    const double llr = 123;
-    const double vtb = 282;
+  static Picture _lvPictureOf(bool isDark) {
+    return _lvPictures.putIfAbsent(isDark, () {
+      final recorder = PictureRecorder();
+      final paint = Paint()..color = isDark ? Colors.black : Colors.white;
+      final canvas = Canvas(recorder);
 
-    canvas
-      // L
-      ..drawRRect(.fromLTRBAndCorners(56, lvTop, llr, _botYB, topLeft: _r, topRight: _r, bottomLeft: _r), paint)
-      ..drawRRect(.fromLTRBAndCorners(llr - 1, _botY, 256, _botYB, topRight: _r, bottomRight: _r), paint)
-      // V
-      ..drawRRect(.fromLTRBAndCorners(vLeft, lvTop, 363, vtb + 1, topLeft: _r, topRight: _r), paint)
-      ..drawRRect(.fromLTRBAndCorners(476, lvTop, 543, vtb + 1, topLeft: _r, topRight: _r), paint)
-      ..drawPath(
-        Path()
-          ..moveTo(vLeft, vtb)
-          ..lineTo(vLeft, 292)
-          ..arcToPoint(const Offset(300, 313), radius: const .circular(50), clockwise: false)
-          ..lineTo(395, 408)
-          ..arcToPoint(const Offset(444, 408), radius: const .circular(50), clockwise: false)
-          ..lineTo(539, 313)
-          ..arcToPoint(const Offset(543, 292), radius: const .circular(50), clockwise: false)
-          ..lineTo(543, vtb)
-          ..lineTo(476, vtb)
-          ..lineTo(419.5, 340)
-          ..lineTo(363, vtb)
-          ..close(),
-        paint,
-      );
-    return recorder.endRecording();
-  }();
+      const double vLeft = 296;
+      const double lvTop = 106;
+      const double llr = 123;
+      const double vtb = 282;
 
-  void drawLevelLv() => drawPicture(_lvPicture);
+      canvas
+        // L
+        ..drawRRect(.fromLTRBAndCorners(56, lvTop, llr, _botYB, topLeft: _r, topRight: _r, bottomLeft: _r), paint)
+        ..drawRRect(.fromLTRBAndCorners(llr - 1, _botY, 256, _botYB, topRight: _r, bottomRight: _r), paint)
+        // V
+        ..drawRRect(.fromLTRBAndCorners(vLeft, lvTop, 363, vtb + 1, topLeft: _r, topRight: _r), paint)
+        ..drawRRect(.fromLTRBAndCorners(476, lvTop, 543, vtb + 1, topLeft: _r, topRight: _r), paint)
+        ..drawPath(
+          Path()
+            ..moveTo(vLeft, vtb)
+            ..lineTo(vLeft, 292)
+            ..arcToPoint(const Offset(300, 313), radius: const .circular(50), clockwise: false)
+            ..lineTo(395, 408)
+            ..arcToPoint(const Offset(444, 408), radius: const .circular(50), clockwise: false)
+            ..lineTo(539, 313)
+            ..arcToPoint(const Offset(543, 292), radius: const .circular(50), clockwise: false)
+            ..lineTo(543, vtb)
+            ..lineTo(476, vtb)
+            ..lineTo(419.5, 340)
+            ..lineTo(363, vtb)
+            ..close(),
+          paint,
+        );
+      return recorder.endRecording();
+    });
+  }
+
+  void drawLevelLv(Color fg) => drawPicture(_lvPictureOf(fg == Colors.black));
 
   static const double _totalR = 930;
   static const double _extendR = 1250;
@@ -280,8 +310,7 @@ extension type LevelCanvas(Canvas _) implements Canvas {
   void drawLevelBack(Paint paint, {bool bolt = false}) {
     const radius = Radius.circular(27);
     final double right = bolt ? _extendR : _totalR;
-    const double blockTop = 48;
-    drawRRect(
+    const double blockTop = 48;    drawRRect(
       RRect.fromLTRBAndCorners(0, blockTop, right, _totalB, topLeft: radius, bottomLeft: radius, bottomRight: radius),
       paint,
     );
@@ -290,6 +319,6 @@ extension type LevelCanvas(Canvas _) implements Canvas {
       paint,
     );
 
-    if (bolt) drawBolt();
+    if (bolt) drawBolt(paint.color != Colors.black);
   }
 }
