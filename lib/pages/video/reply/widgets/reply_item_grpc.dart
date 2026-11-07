@@ -481,6 +481,8 @@ class ReplyItemGrpc extends StatelessWidget {
       visualDensity: .compact,
       tapTargetSize: .shrinkWrap,
       padding: WidgetStatePropertyAll(.zero),
+      // 全局 textButtonTheme 会描 1dp 黑边，这里是文字按钮，不要框
+      side: WidgetStatePropertyAll(BorderSide.none),
     );
 
     Widget? dialogBtn;

@@ -146,7 +146,9 @@ class VideoCardV extends StatelessWidget {
             overflow: .ellipsis,
             style: TextStyle(
               fontSize: theme.textTheme.bodyMedium?.fontSize,
-              fontWeight: FontWeight.w500,
+              // 墨水屏只有 16 级灰阶，标题用 w500 会和下方「播放量/UP 名」糊在一起，
+              // 加粗到 w700 后整张卡有了明确的第一层级。
+              fontWeight: FontWeight.w700,
               height: 1.32,
               color: theme.colorScheme.onSurface,
             ),

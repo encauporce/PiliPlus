@@ -103,6 +103,9 @@ class ZanButtonGrpc extends StatelessWidget {
       padding: EdgeInsets.zero,
       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
       visualDensity: VisualDensity.compact,
+      // 全局 textButtonTheme 给所有 TextButton 描了 1dp 黑边，这里是要"裸按钮"，
+      // 否则赞/踩各套一个方框，评论区会变成一排小方块。
+      side: BorderSide.none,
     );
 
     @pragma('vm:prefer-inline')
@@ -131,6 +134,7 @@ class ZanButtonGrpc extends StatelessWidget {
               tapTargetSize: .shrinkWrap,
               padding: WidgetStatePropertyAll(.zero),
               minimumSize: WidgetStatePropertyAll(.square(40)),
+              side: WidgetStatePropertyAll(BorderSide.none),
             ),
             onPressed: isLogin
                 ? () => wrapProcessing(onHateReply)
