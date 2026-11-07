@@ -9,6 +9,17 @@ on:
     #         - ready_for_review
     #     paths-ignore:
     #         - "**.md"
+    # 墨水屏 fork：workflow_dispatch 接口被 GitHub 拒绝（422 Actions disabled），
+    # 改为 push 到 main 直接出包，省掉手动 dispatch。
+    push:
+        branches:
+            - main
+        paths:
+            - "lib/**"
+            - "assets/**"
+            - "pubspec.yaml"
+            - "android/**"
+            - ".github/workflows/build.yml"
     workflow_dispatch:
         inputs:
             build_android:
@@ -49,7 +60,7 @@ on:
 
 jobs:
     android:
-        if: ${{ (github.event_name == 'pull_request' && github.repository == 'bggRGjQaUbCoE/PiliPlus') || github.event.inputs.build_android == 'true' || github.event.inputs.build_android == true || github.event_name == 'workflow_dispatch' }}
+        if: ${{ (github.event_name == 'pull_request' && github.repository == 'bggRGjQaUbCoE/PiliPlus') || github.event.inputs.build_android == 'true' || github.event.inputs.build_android == true || github.event_name == 'workflow_dispatch' || github.event_name == 'push' }}
         name: Release Android
         runs-on: ubuntu-latest
         permissions: write-all
@@ -83,7 +94,7 @@ jobs:
               run: lib/scripts/patch.ps1 android
 
             - name: Write key
-              if: github.event_name == 'workflow_dispatch'
+              if: github.event_name == 'workflow_dispatch' || github.event_name == 'push'
               run: |
                   if [ ! -z "${{ secrets.SIGN_KEYSTORE_BASE64 }}" ]; then
                     echo "${{ secrets.SIGN_KEYSTORE_BASE64 }}" | base64 --decode > android/app/key.jks
@@ -94,12 +105,12 @@ jobs:
                   fi
 
             - name: Set and Extract version
-              if: ${{ github.event_name == 'workflow_dispatch' }}
+              if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'push' }}
               shell: pwsh
               run: lib/scripts/build.ps1 android
 
             - name: Flutter Build Release Apk
-              if: ${{ github.event_name == 'workflow_dispatch' }}
+              if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'push' }}
               run: flutter build apk --release --split-per-abi --dart-define-from-file=pili_release.json --no-pub
 
             - name: Flutter Build Dev Apk
